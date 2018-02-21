@@ -1,0 +1,1725 @@
+{
+  "metadata" : {
+    "name" : "2_WorkingWithComplexSchemas",
+    "user_save_timestamp" : "1119-01-01T05:30:00.000Z",
+    "auto_save_timestamp" : "1970-01-01T05:30:00.000Z",
+    "language_info" : {
+      "name" : "scala",
+      "file_extension" : "scala",
+      "codemirror_mode" : "text/x-scala"
+    },
+    "trusted" : true,
+    "customLocalRepo" : null,
+    "customRepos" : null,
+    "customDeps" : null,
+    "customImports" : null,
+    "customArgs" : null,
+    "customSparkConf" : null
+  },
+  "cells" : [ {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "35E2EE4444664701B59B52CEF90A5007"
+    },
+    "cell_type" : "code",
+    "source" : "sc.version",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "res2: String = 1.6.0\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : "1.6.0"
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 1,
+      "time" : "Took: 1 second 185 milliseconds, at 2018-2-21 17:46"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "D1121BD2FDC849C78DEA5BD3AE183B1F"
+    },
+    "cell_type" : "code",
+    "source" : "import org.apache.spark.sql.SQLContext",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "import org.apache.spark.sql.SQLContext\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 2,
+      "time" : "Took: 811 milliseconds, at 2018-2-21 17:46"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "4BD09D5F34844A918C14B4BB564AD6CF"
+    },
+    "cell_type" : "code",
+    "source" : "val sqlContext = new SQLContext(sc)",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "sqlContext: org.apache.spark.sql.SQLContext = org.apache.spark.sql.SQLContext@6efd70a7\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 3,
+      "time" : "Took: 1 second 90 milliseconds, at 2018-2-21 17:46"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "A782DE9870924EBB8A06DD3B2DD16B3D"
+    },
+    "cell_type" : "code",
+    "source" : "import sqlContext.implicits._",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "import sqlContext.implicits._\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 4,
+      "time" : "Took: 1 second 628 milliseconds, at 2018-2-21 17:46"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "2B4C464462B243878697327005363CFF"
+    },
+    "cell_type" : "code",
+    "source" : "import org.apache.spark.sql.Row",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "import org.apache.spark.sql.Row\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 5,
+      "time" : "Took: 660 milliseconds, at 2018-2-21 17:46"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "762F5E2F1D7241C49589287A84367B96"
+    },
+    "cell_type" : "code",
+    "source" : "val rowSeq = Seq(\n  Row(1, Row(\"a\", \"b\"), 40.00, Row(1,2)),\n  Row(2, Row(\"c\", \"d\"), 50.00, Row(3,4))\n )",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "rowSeq: Seq[org.apache.spark.sql.Row] = List([1,[a,b],40.0,[1,2]], [2,[c,d],50.0,[3,4]])\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 6,
+      "time" : "Took: 694 milliseconds, at 2018-2-21 17:46"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "2CEC0CF73D0344C98F293893B50279C1"
+    },
+    "cell_type" : "code",
+    "source" : "val rowRDD = sc.parallelize(rowSeq, 4)",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "rowRDD: org.apache.spark.rdd.RDD[org.apache.spark.sql.Row] = ParallelCollectionRDD[0] at parallelize at <console>:69\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 7,
+      "time" : "Took: 978 milliseconds, at 2018-2-21 17:46"
+    } ]
+  }, {
+    "metadata" : {
+      "id" : "EB1F4D3405D648ED8572879C601E81B9"
+    },
+    "cell_type" : "markdown",
+    "source" : "Let's builda schema using StructType syntax"
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "1E7F3FB7AFE7434C9BB29A837759CC81"
+    },
+    "cell_type" : "code",
+    "source" : "import org.apache.spark.sql.types._",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "import org.apache.spark.sql.types._\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 8,
+      "time" : "Took: 882 milliseconds, at 2018-2-21 17:46"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "EA74793492C14D54813F778C720CCD0B"
+    },
+    "cell_type" : "code",
+    "source" : "val rowSchema = StructType(\n  Seq(\n    StructField(\"id\", IntegerType, true),\n    StructField(\"dummy\", StructType(\n      Seq(\n        StructField(\"x\", StringType, true),\n        StructField(\"y\", StringType, true)\n        )\n      ), true),\n    StructField(\"amt\", DoubleType, true),\n    StructField(\"gummy\", StructType(\n      Seq(\n        StructField(\"p\", IntegerType, true),\n        StructField(\"q\", IntegerType, true)\n        )\n      ), true)\n    )\n  )",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "rowSchema: org.apache.spark.sql.types.StructType = StructType(StructField(id,IntegerType,true), StructField(dummy,StructType(StructField(x,StringType,true), StructField(y,StringType,true)),true), StructField(amt,DoubleType,true), StructField(gummy,StructType(StructField(p,IntegerType,true), StructField(q,IntegerType,true)),true))\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 9,
+      "time" : "Took: 871 milliseconds, at 2018-2-21 17:47"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "EB6FE240F9C44104ACC0B118807D582F"
+    },
+    "cell_type" : "code",
+    "source" : "//Postion of field \"amt\"\nrowSchema.fieldIndex(\"amt\")",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "res12: Int = 2\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : "2"
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 10,
+      "time" : "Took: 832 milliseconds, at 2018-2-21 17:47"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "D8A72877163040C98025391F66EFDA42"
+    },
+    "cell_type" : "code",
+    "source" : "val df = sqlContext.createDataFrame(rowRDD, rowSchema)",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "df: org.apache.spark.sql.DataFrame = [id: int, dummy: struct<x:string,y:string>, amt: double, gummy: struct<p:int,q:int>]\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 11,
+      "time" : "Took: 943 milliseconds, at 2018-2-21 17:47"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "1B4319A95CE04036A50EA373AFAAB105"
+    },
+    "cell_type" : "code",
+    "source" : "df.printSchema",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "root\n |-- id: integer (nullable = true)\n |-- dummy: struct (nullable = true)\n |    |-- x: string (nullable = true)\n |    |-- y: string (nullable = true)\n |-- amt: double (nullable = true)\n |-- gummy: struct (nullable = true)\n |    |-- p: integer (nullable = true)\n |    |-- q: integer (nullable = true)\n\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 12,
+      "time" : "Took: 762 milliseconds, at 2018-2-21 17:47"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "14CC471E9500422D8797C532E1ADC62F"
+    },
+    "cell_type" : "code",
+    "source" : "df.show",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "+---+-----+----+-----+\n| id|dummy| amt|gummy|\n+---+-----+----+-----+\n|  1|[a,b]|40.0|[1,2]|\n|  2|[c,d]|50.0|[3,4]|\n+---+-----+----+-----+\n\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 13,
+      "time" : "Took: 1 second 649 milliseconds, at 2018-2-21 17:47"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "E0833827417B46FD8358DCEFABE49329"
+    },
+    "cell_type" : "code",
+    "source" : "df.select(\"dummy.x\").show",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "+---+\n|  x|\n+---+\n|  a|\n|  c|\n+---+\n\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 14,
+      "time" : "Took: 1 second 200 milliseconds, at 2018-2-21 17:47"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "525D00519869442087E6C3CC19D36414"
+    },
+    "cell_type" : "code",
+    "source" : "df.select($\"dummy\".getField(\"x\")).show",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "+--------+\n|dummy[x]|\n+--------+\n|       a|\n|       c|\n+--------+\n\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 15,
+      "time" : "Took: 914 milliseconds, at 2018-2-21 17:47"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "presentation" : {
+        "tabs_state" : "{\n  \"tab_id\": \"#tab660022980-0\"\n}",
+        "pivot_chart_state" : "{\n  \"hiddenAttributes\": [],\n  \"menuLimit\": 200,\n  \"cols\": [],\n  \"rows\": [],\n  \"vals\": [],\n  \"exclusions\": {},\n  \"inclusions\": {},\n  \"unusedAttrsVertical\": 85,\n  \"autoSortUnusedAttrs\": false,\n  \"inclusionsInfo\": {},\n  \"aggregatorName\": \"Count\",\n  \"rendererName\": \"Table\"\n}"
+      },
+      "id" : "2E217E11328B4FF380609CA51DF20939"
+    },
+    "cell_type" : "code",
+    "source" : "df.schema",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "res23: org.apache.spark.sql.types.StructType = StructType(StructField(id,IntegerType,true), StructField(dummy,StructType(StructField(x,StringType,true), StructField(y,StringType,true)),true), StructField(amt,DoubleType,true), StructField(gummy,StructType(StructField(p,IntegerType,true), StructField(q,IntegerType,true)),true))\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : "<div>\n      <script data-this=\"{&quot;dataId&quot;:&quot;anon904c69bed691a2dcec3b35812dba47eb&quot;,&quot;dataInit&quot;:[],&quot;genId&quot;:&quot;660022980&quot;}\" type=\"text/x-scoped-javascript\">/*<![CDATA[*/req(['../javascripts/notebook/playground','../javascripts/notebook/magic/tabs'], \n      function(playground, _magictabs) {\n        // data ==> data-this (in observable.js's scopedEval) ==> this in JS => { dataId, dataInit, ... }\n        // this ==> scope (in observable.js's scopedEval) ==> this.parentElement ==> div.container below (toHtml)\n\n        playground.call(data,\n                        this\n                        ,\n                        {\n    \"f\": _magictabs,\n    \"o\": {}\n  }\n  \n                        \n                        \n                      );\n      }\n    );/*]]>*/</script>\n    <div>\n      <div>\n        <ul class=\"nav nav-tabs\" id=\"ul660022980\"><li>\n              <a href=\"#tab660022980-0\"><i class=\"fa fa-table\"/></a>\n            </li><li>\n              <a href=\"#tab660022980-1\"><i class=\"fa fa-cubes\"/></a>\n            </li></ul>\n\n        <div class=\"tab-content\" id=\"tab660022980\"><div class=\"tab-pane\" id=\"tab660022980-0\">\n            <div>\n      <script data-this=\"{&quot;dataId&quot;:&quot;anon5d66ad4184da7d1d687922e70579ecb7&quot;,&quot;dataInit&quot;:[{&quot;name&quot;:&quot;id&quot;,&quot;dataType&quot;:&quot;IntegerType&quot;,&quot;nullable&quot;:true,&quot;metadata&quot;:&quot;{}&quot;},{&quot;name&quot;:&quot;dummy&quot;,&quot;dataType&quot;:[&quot;StructField(x,StringType,true)&quot;,&quot;StructField(y,StringType,true)&quot;],&quot;nullable&quot;:true,&quot;metadata&quot;:&quot;{}&quot;},{&quot;name&quot;:&quot;amt&quot;,&quot;dataType&quot;:&quot;DoubleType&quot;,&quot;nullable&quot;:true,&quot;metadata&quot;:&quot;{}&quot;},{&quot;name&quot;:&quot;gummy&quot;,&quot;dataType&quot;:[&quot;StructField(p,IntegerType,true)&quot;,&quot;StructField(q,IntegerType,true)&quot;],&quot;nullable&quot;:true,&quot;metadata&quot;:&quot;{}&quot;}],&quot;genId&quot;:&quot;704097379&quot;}\" type=\"text/x-scoped-javascript\">/*<![CDATA[*/req(['../javascripts/notebook/playground','../javascripts/notebook/magic/tableChart'], \n      function(playground, _magictableChart) {\n        // data ==> data-this (in observable.js's scopedEval) ==> this in JS => { dataId, dataInit, ... }\n        // this ==> scope (in observable.js's scopedEval) ==> this.parentElement ==> div.container below (toHtml)\n\n        playground.call(data,\n                        this\n                        ,\n                        {\n    \"f\": _magictableChart,\n    \"o\": {\"headers\":[\"name\",\"dataType\",\"nullable\",\"metadata\"],\"width\":600,\"height\":400}\n  }\n  \n                        \n                        \n                      );\n      }\n    );/*]]>*/</script>\n    <div>\n      <span class=\"chart-total-item-count\"><p data-bind=\"text: value\"><script data-this=\"{&quot;valueId&quot;:&quot;anon63fcf1f157cd2c1c56a17aff439ea43a&quot;,&quot;initialValue&quot;:&quot;4&quot;}\" type=\"text/x-scoped-javascript\">/*<![CDATA[*/\nreq(\n['observable', 'knockout'],\nfunction (O, ko) {\n  ko.applyBindings({\n      value: O.makeObservable(valueId, initialValue)\n    },\n    this\n  );\n});\n        /*]]>*/</script></p> entries total</span>\n      <span class=\"chart-sampling-warning\"><p data-bind=\"text: value\"><script data-this=\"{&quot;valueId&quot;:&quot;anond84c051d311b2db95e672a200251e5cd&quot;,&quot;initialValue&quot;:&quot;&quot;}\" type=\"text/x-scoped-javascript\">/*<![CDATA[*/\nreq(\n['observable', 'knockout'],\nfunction (O, ko) {\n  ko.applyBindings({\n      value: O.makeObservable(valueId, initialValue)\n    },\n    this\n  );\n});\n        /*]]>*/</script></p></span>\n      <div>\n      </div>\n    </div></div>\n            </div><div class=\"tab-pane\" id=\"tab660022980-1\">\n            <div>\n      <script data-this=\"{&quot;dataId&quot;:&quot;anon694734c8775603eeda5ae7f891a467aa&quot;,&quot;dataInit&quot;:[{&quot;name&quot;:&quot;id&quot;,&quot;dataType&quot;:&quot;IntegerType&quot;,&quot;nullable&quot;:true,&quot;metadata&quot;:&quot;{}&quot;},{&quot;name&quot;:&quot;dummy&quot;,&quot;dataType&quot;:[&quot;StructField(x,StringType,true)&quot;,&quot;StructField(y,StringType,true)&quot;],&quot;nullable&quot;:true,&quot;metadata&quot;:&quot;{}&quot;},{&quot;name&quot;:&quot;amt&quot;,&quot;dataType&quot;:&quot;DoubleType&quot;,&quot;nullable&quot;:true,&quot;metadata&quot;:&quot;{}&quot;},{&quot;name&quot;:&quot;gummy&quot;,&quot;dataType&quot;:[&quot;StructField(p,IntegerType,true)&quot;,&quot;StructField(q,IntegerType,true)&quot;],&quot;nullable&quot;:true,&quot;metadata&quot;:&quot;{}&quot;}],&quot;genId&quot;:&quot;207881743&quot;}\" type=\"text/x-scoped-javascript\">/*<![CDATA[*/req(['../javascripts/notebook/playground','../javascripts/notebook/magic/pivotChart'], \n      function(playground, _magicpivotChart) {\n        // data ==> data-this (in observable.js's scopedEval) ==> this in JS => { dataId, dataInit, ... }\n        // this ==> scope (in observable.js's scopedEval) ==> this.parentElement ==> div.container below (toHtml)\n\n        playground.call(data,\n                        this\n                        ,\n                        {\n    \"f\": _magicpivotChart,\n    \"o\": {\"width\":600,\"height\":400,\"derivedAttributes\":{},\"extraOptions\":{}}\n  }\n  \n                        \n                        \n                      );\n      }\n    );/*]]>*/</script>\n    <div>\n      <span class=\"chart-total-item-count\"><p data-bind=\"text: value\"><script data-this=\"{&quot;valueId&quot;:&quot;anon7147f1199b2222bba1477890d05bd0a2&quot;,&quot;initialValue&quot;:&quot;4&quot;}\" type=\"text/x-scoped-javascript\">/*<![CDATA[*/\nreq(\n['observable', 'knockout'],\nfunction (O, ko) {\n  ko.applyBindings({\n      value: O.makeObservable(valueId, initialValue)\n    },\n    this\n  );\n});\n        /*]]>*/</script></p> entries total</span>\n      <span class=\"chart-sampling-warning\"><p data-bind=\"text: value\"><script data-this=\"{&quot;valueId&quot;:&quot;anon53aad103bd4793c3fc4cdedfc4ec3122&quot;,&quot;initialValue&quot;:&quot;&quot;}\" type=\"text/x-scoped-javascript\">/*<![CDATA[*/\nreq(\n['observable', 'knockout'],\nfunction (O, ko) {\n  ko.applyBindings({\n      value: O.makeObservable(valueId, initialValue)\n    },\n    this\n  );\n});\n        /*]]>*/</script></p></span>\n      <div>\n      </div>\n    </div></div>\n            </div></div>\n      </div>\n    </div></div>"
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 16,
+      "time" : "Took: 1 second 307 milliseconds, at 2018-2-21 17:47"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "presentation" : {
+        "tabs_state" : "{\n  \"tab_id\": \"#tab253059128-0\"\n}",
+        "pivot_chart_state" : "{\n  \"hiddenAttributes\": [],\n  \"menuLimit\": 200,\n  \"cols\": [],\n  \"rows\": [],\n  \"vals\": [],\n  \"exclusions\": {},\n  \"inclusions\": {},\n  \"unusedAttrsVertical\": 85,\n  \"autoSortUnusedAttrs\": false,\n  \"inclusionsInfo\": {},\n  \"aggregatorName\": \"Count\",\n  \"rendererName\": \"Table\"\n}"
+      },
+      "id" : "1B7E09E5DD734F238F90C4A0B4D35B16"
+    },
+    "cell_type" : "code",
+    "source" : "df.schema.fields.flatMap(x => Array(col(x.name), x.dataType))",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "res109: Array[Object] = Array(id, IntegerType, dummy, StructType(StructField(x,StringType,true), StructField(y,StringType,true)), amt, DoubleType, gummy, StructType(StructField(p,IntegerType,true), StructField(q,IntegerType,true)))\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : "<div>\n      <script data-this=\"{&quot;dataId&quot;:&quot;anon3b2116758038ea109976a52c902d9bbf&quot;,&quot;dataInit&quot;:[],&quot;genId&quot;:&quot;253059128&quot;}\" type=\"text/x-scoped-javascript\">/*<![CDATA[*/req(['../javascripts/notebook/playground','../javascripts/notebook/magic/tabs'], \n      function(playground, _magictabs) {\n        // data ==> data-this (in observable.js's scopedEval) ==> this in JS => { dataId, dataInit, ... }\n        // this ==> scope (in observable.js's scopedEval) ==> this.parentElement ==> div.container below (toHtml)\n\n        playground.call(data,\n                        this\n                        ,\n                        {\n    \"f\": _magictabs,\n    \"o\": {}\n  }\n  \n                        \n                        \n                      );\n      }\n    );/*]]>*/</script>\n    <div>\n      <div>\n        <ul class=\"nav nav-tabs\" id=\"ul253059128\"><li>\n              <a href=\"#tab253059128-0\"><i class=\"fa fa-table\"/></a>\n            </li><li>\n              <a href=\"#tab253059128-1\"><i class=\"fa fa-cubes\"/></a>\n            </li></ul>\n\n        <div class=\"tab-content\" id=\"tab253059128\"><div class=\"tab-pane\" id=\"tab253059128-0\">\n            <div>\n      <script data-this=\"{&quot;dataId&quot;:&quot;anona11d10efd03e90fd0822708831ce9047&quot;,&quot;dataInit&quot;:[{&quot;expr&quot;:&quot;'id&quot;},{},{&quot;expr&quot;:&quot;'dummy&quot;},{},{&quot;expr&quot;:&quot;'amt&quot;},{},{&quot;expr&quot;:&quot;'gummy&quot;},{}],&quot;genId&quot;:&quot;1448549338&quot;}\" type=\"text/x-scoped-javascript\">/*<![CDATA[*/req(['../javascripts/notebook/playground','../javascripts/notebook/magic/tableChart'], \n      function(playground, _magictableChart) {\n        // data ==> data-this (in observable.js's scopedEval) ==> this in JS => { dataId, dataInit, ... }\n        // this ==> scope (in observable.js's scopedEval) ==> this.parentElement ==> div.container below (toHtml)\n\n        playground.call(data,\n                        this\n                        ,\n                        {\n    \"f\": _magictableChart,\n    \"o\": {\"headers\":[\"expr\"],\"width\":600,\"height\":400}\n  }\n  \n                        \n                        \n                      );\n      }\n    );/*]]>*/</script>\n    <div>\n      <span class=\"chart-total-item-count\"><p data-bind=\"text: value\"><script data-this=\"{&quot;valueId&quot;:&quot;anon89df5b988dfad7e9d5cd04f6f9dd4356&quot;,&quot;initialValue&quot;:&quot;8&quot;}\" type=\"text/x-scoped-javascript\">/*<![CDATA[*/\nreq(\n['observable', 'knockout'],\nfunction (O, ko) {\n  ko.applyBindings({\n      value: O.makeObservable(valueId, initialValue)\n    },\n    this\n  );\n});\n        /*]]>*/</script></p> entries total</span>\n      <span class=\"chart-sampling-warning\"><p data-bind=\"text: value\"><script data-this=\"{&quot;valueId&quot;:&quot;anon20413cd9188aedfa60267b8c9ac0b3a9&quot;,&quot;initialValue&quot;:&quot;&quot;}\" type=\"text/x-scoped-javascript\">/*<![CDATA[*/\nreq(\n['observable', 'knockout'],\nfunction (O, ko) {\n  ko.applyBindings({\n      value: O.makeObservable(valueId, initialValue)\n    },\n    this\n  );\n});\n        /*]]>*/</script></p></span>\n      <div>\n      </div>\n    </div></div>\n            </div><div class=\"tab-pane\" id=\"tab253059128-1\">\n            <div>\n      <script data-this=\"{&quot;dataId&quot;:&quot;anon6d20aeacef0b2196284516f2d32bcd3b&quot;,&quot;dataInit&quot;:[{&quot;expr&quot;:&quot;'id&quot;},{},{&quot;expr&quot;:&quot;'dummy&quot;},{&quot;nameToIndex&quot;:null,&quot;interpretedOrdering&quot;:null,&quot;fieldNamesSet&quot;:null,&quot;fields&quot;:&quot;[Lorg.apache.spark.sql.types.StructField;@470c6395&quot;,&quot;nameToField&quot;:null},{&quot;expr&quot;:&quot;'amt&quot;},{},{&quot;expr&quot;:&quot;'gummy&quot;},{&quot;nameToIndex&quot;:null,&quot;interpretedOrdering&quot;:null,&quot;fieldNamesSet&quot;:null,&quot;fields&quot;:&quot;[Lorg.apache.spark.sql.types.StructField;@4b0c1efb&quot;,&quot;nameToField&quot;:null}],&quot;genId&quot;:&quot;1532761419&quot;}\" type=\"text/x-scoped-javascript\">/*<![CDATA[*/req(['../javascripts/notebook/playground','../javascripts/notebook/magic/pivotChart'], \n      function(playground, _magicpivotChart) {\n        // data ==> data-this (in observable.js's scopedEval) ==> this in JS => { dataId, dataInit, ... }\n        // this ==> scope (in observable.js's scopedEval) ==> this.parentElement ==> div.container below (toHtml)\n\n        playground.call(data,\n                        this\n                        ,\n                        {\n    \"f\": _magicpivotChart,\n    \"o\": {\"width\":600,\"height\":400,\"derivedAttributes\":{},\"extraOptions\":{}}\n  }\n  \n                        \n                        \n                      );\n      }\n    );/*]]>*/</script>\n    <div>\n      <span class=\"chart-total-item-count\"><p data-bind=\"text: value\"><script data-this=\"{&quot;valueId&quot;:&quot;anon7f749efe50945d3e1884c3eb2d8d1fdc&quot;,&quot;initialValue&quot;:&quot;8&quot;}\" type=\"text/x-scoped-javascript\">/*<![CDATA[*/\nreq(\n['observable', 'knockout'],\nfunction (O, ko) {\n  ko.applyBindings({\n      value: O.makeObservable(valueId, initialValue)\n    },\n    this\n  );\n});\n        /*]]>*/</script></p> entries total</span>\n      <span class=\"chart-sampling-warning\"><p data-bind=\"text: value\"><script data-this=\"{&quot;valueId&quot;:&quot;anon6d32b9ede1262db7548f510dc764b5d3&quot;,&quot;initialValue&quot;:&quot;&quot;}\" type=\"text/x-scoped-javascript\">/*<![CDATA[*/\nreq(\n['observable', 'knockout'],\nfunction (O, ko) {\n  ko.applyBindings({\n      value: O.makeObservable(valueId, initialValue)\n    },\n    this\n  );\n});\n        /*]]>*/</script></p></span>\n      <div>\n      </div>\n    </div></div>\n            </div></div>\n      </div>\n    </div></div>"
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 73,
+      "time" : "Took: 953 milliseconds, at 2018-2-21 17:48"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "presentation" : {
+        "tabs_state" : "{\n  \"tab_id\": \"#tab1835655813-0\"\n}",
+        "pivot_chart_state" : "{\n  \"hiddenAttributes\": [],\n  \"menuLimit\": 200,\n  \"cols\": [],\n  \"rows\": [],\n  \"vals\": [],\n  \"exclusions\": {},\n  \"inclusions\": {},\n  \"unusedAttrsVertical\": 85,\n  \"autoSortUnusedAttrs\": false,\n  \"inclusionsInfo\": {},\n  \"aggregatorName\": \"Count\",\n  \"rendererName\": \"Table\"\n}"
+      },
+      "id" : "E4AA67C09F9745358D09BC3982E7C418"
+    },
+    "cell_type" : "code",
+    "source" : "import org.apache.spark.sql.Column\nimport org.apache.spark.sql.functions._",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "import org.apache.spark.sql.Column\nimport org.apache.spark.sql.functions._\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 18,
+      "time" : "Took: 1 second 751 milliseconds, at 2018-2-21 17:47"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "70DD90D1BF314D5083047E50D541C6B6"
+    },
+    "cell_type" : "code",
+    "source" : "def flattenSchema(schema: StructType, prefix: String = null) : Array[Column] = {\n  schema.fields.flatMap(f => {\n    val colName = if (prefix == null) f.name else (prefix + \".\" + f.name)\n\n    f.dataType match {\n      case st: StructType => flattenSchema(st, colName)\n      case _ => Array(col(colName))\n    }\n  })\n}",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "flattenSchema: (schema: org.apache.spark.sql.types.StructType, prefix: String)Array[org.apache.spark.sql.Column]\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 19,
+      "time" : "Took: 950 milliseconds, at 2018-2-21 17:47"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "8C6E23669AE9426ABCCB4AD3CAB5D40F"
+    },
+    "cell_type" : "code",
+    "source" : "df.select(flattenSchema(df.schema) :_*).show",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "+---+---+---+----+---+---+\n| id|  x|  y| amt|  p|  q|\n+---+---+---+----+---+---+\n|  1|  a|  b|40.0|  1|  2|\n|  2|  c|  d|50.0|  3|  4|\n+---+---+---+----+---+---+\n\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 20,
+      "time" : "Took: 1 second 183 milliseconds, at 2018-2-21 17:47"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "FBE1D85A41184F188284012F8F0FD7EB"
+    },
+    "cell_type" : "code",
+    "source" : "val cols = flattenSchema(df.schema)",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "cols: Array[org.apache.spark.sql.Column] = Array(id, dummy.x, dummy.y, amt, gummy.p, gummy.q)\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 21,
+      "time" : "Took: 638 milliseconds, at 2018-2-21 17:47"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "31059F497A9E41018F37FF94C2FD177A"
+    },
+    "cell_type" : "code",
+    "source" : "val renamedCols = cols.map(x => (col(x.toString()).as(x.toString().replace(\".\", \"_\"))))",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "renamedCols: Array[org.apache.spark.sql.Column] = Array(id AS id#74, dummy.x AS dummy_x#75, dummy.y AS dummy_y#76, amt AS amt#77, gummy.p AS gummy_p#78, gummy.q AS gummy_q#79)\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 74,
+      "time" : "Took: 629 milliseconds, at 2018-2-21 17:57"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "B7C0EB09D5894E6A827A07AE3373DB51"
+    },
+    "cell_type" : "code",
+    "source" : "df.select(renamedCols :_*).show",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "+---+-------+-------+----+-------+-------+\n| id|dummy_x|dummy_y| amt|gummy_p|gummy_q|\n+---+-------+-------+----+-------+-------+\n|  1|      a|      b|40.0|      1|      2|\n|  2|      c|      d|50.0|      3|      4|\n+---+-------+-------+----+-------+-------+\n\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 75,
+      "time" : "Took: 898 milliseconds, at 2018-2-21 17:57"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "27600278E7764DFF82093614BDE3C261"
+    },
+    "cell_type" : "code",
+    "source" : "//Examples for struct fields\nval simpleStruct = StructType(\n  StructField(\"a\", IntegerType, true) ::\n  StructField(\"b\", StringType, true) ::\n  StructField(\"c\", DoubleType, true) ::\n  StructField(\"d\", BooleanType, true)::Nil)",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "simpleStruct: org.apache.spark.sql.types.StructType = StructType(StructField(a,IntegerType,true), StructField(b,StringType,true), StructField(c,DoubleType,true), StructField(d,BooleanType,true))\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 24,
+      "time" : "Took: 635 milliseconds, at 2018-2-21 17:47"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "8425F6D5DF2C4B53A8AE4D3F905C5A75"
+    },
+    "cell_type" : "code",
+    "source" : "//1. Extract a single StructField\nval singleField = simpleStruct(\"a\")\n",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "singleField: org.apache.spark.sql.types.StructField = StructField(a,IntegerType,true)\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 25,
+      "time" : "Took: 643 milliseconds, at 2018-2-21 17:47"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "CC2B20B95F76422D933A29A24751AB0E"
+    },
+    "cell_type" : "code",
+    "source" : "//2. Try with a non existing field\nval noField = simpleStruct(\"e\")",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "java.lang.IllegalArgumentException: Field \"e\" does not exist.\n\tat org.apache.spark.sql.types.StructType$$anonfun$apply$1.apply(StructType.scala:212)\n\tat org.apache.spark.sql.types.StructType$$anonfun$apply$1.apply(StructType.scala:212)\n\tat scala.collection.MapLike$class.getOrElse(MapLike.scala:128)\n\tat scala.collection.AbstractMap.getOrElse(Map.scala:58)\n\tat org.apache.spark.sql.types.StructType.apply(StructType.scala:211)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.<init>(<console>:77)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.<init>(<console>:84)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.<init>(<console>:86)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.<init>(<console>:88)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.<init>(<console>:90)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.<init>(<console>:92)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.<init>(<console>:94)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.<init>(<console>:96)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.<init>(<console>:98)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.<init>(<console>:100)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.<init>(<console>:102)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.<init>(<console>:104)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.<init>(<console>:106)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.<init>(<console>:108)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.<init>(<console>:110)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.<init>(<console>:112)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.<init>(<console>:114)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.<init>(<console>:116)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.<init>(<console>:118)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.<init>(<console>:120)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.<init>(<console>:122)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.<init>(<console>:124)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC.<init>(<console>:126)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC.<init>(<console>:128)\n\tat $iwC$$iwC$$iwC$$iwC.<init>(<console>:130)\n\tat $iwC$$iwC$$iwC.<init>(<console>:132)\n\tat $iwC$$iwC.<init>(<console>:134)\n\tat $iwC.<init>(<console>:136)\n\tat <init>(<console>:138)\n\tat .<init>(<console>:142)\n\tat .<clinit>(<console>)\n\tat .<init>(<console>:7)\n\tat .<clinit>(<console>)\n\tat $print(<console>)\n\tat sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n\tat sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)\n\tat sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n\tat java.lang.reflect.Method.invoke(Method.java:498)\n\tat org.apache.spark.repl.SparkIMain$ReadEvalPrint.call(SparkIMain.scala:1065)\n\tat org.apache.spark.repl.SparkIMain$Request.loadAndRun(SparkIMain.scala:1346)\n\tat org.apache.spark.repl.SparkIMain.loadAndRunReq$1(SparkIMain.scala:840)\n\tat org.apache.spark.repl.SparkIMain.interpret(SparkIMain.scala:871)\n\tat org.apache.spark.repl.SparkIMain.interpret(SparkIMain.scala:819)\n\tat notebook.kernel.Repl$$anonfun$6.apply(Repl.scala:202)\n\tat notebook.kernel.Repl$$anonfun$6.apply(Repl.scala:202)\n\tat scala.util.DynamicVariable.withValue(DynamicVariable.scala:57)\n\tat scala.Console$.withOut(Console.scala:126)\n\tat notebook.kernel.Repl.evaluate(Repl.scala:201)\n\tat notebook.client.ReplCalculator$$anonfun$10$$anon$1$$anonfun$27.replEvaluate$1(ReplCalculator.scala:402)\n\tat notebook.client.ReplCalculator$$anonfun$10$$anon$1$$anonfun$27.apply(ReplCalculator.scala:415)\n\tat notebook.client.ReplCalculator$$anonfun$10$$anon$1$$anonfun$27.apply(ReplCalculator.scala:396)\n\tat scala.concurrent.impl.Future$PromiseCompletingRunnable.liftedTree1$1(Future.scala:24)\n\tat scala.concurrent.impl.Future$PromiseCompletingRunnable.run(Future.scala:24)\n\tat akka.dispatch.TaskInvocation.run(AbstractDispatcher.scala:40)\n\tat akka.dispatch.ForkJoinExecutorConfigurator$AkkaForkJoinTask.exec(AbstractDispatcher.scala:397)\n\tat scala.concurrent.forkjoin.ForkJoinTask.doExec(ForkJoinTask.java:260)\n\tat scala.concurrent.forkjoin.ForkJoinPool$WorkQueue.runTask(ForkJoinPool.java:1339)\n\tat scala.concurrent.forkjoin.ForkJoinPool.runWorker(ForkJoinPool.java:1979)\n\tat scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:107)\n\n"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "22225001717F476084B4B07BF4056E67"
+    },
+    "cell_type" : "code",
+    "source" : "//3. Extract Multiple Fields\nval twoFields = simpleStruct(Set(\"b\",\"d\"))",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "twoFields: org.apache.spark.sql.types.StructType = StructType(StructField(b,StringType,true), StructField(d,BooleanType,true))\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 27,
+      "time" : "Took: 580 milliseconds, at 2018-2-21 17:47"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "978B8D36FD6447488021B5EAE92A2A40"
+    },
+    "cell_type" : "code",
+    "source" : "//4. use methods\nval struct = ((new StructType)\n              .add(\"a\", IntegerType, true)\n              .add(\"b\", BooleanType)\n              .add(\"c\", LongType, false, Metadata.empty)\n              .add(\"d\", \"int\").add(\"e\", \"string\")\n              .add(\"f\", \"boolean\")\n              .add(\"g\", \"long\"))",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "struct: org.apache.spark.sql.types.StructType = StructType(StructField(a,IntegerType,true), StructField(b,BooleanType,true), StructField(c,LongType,false), StructField(d,IntegerType,true), StructField(e,StringType,true), StructField(f,BooleanType,true), StructField(g,LongType,true))\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 28,
+      "time" : "Took: 756 milliseconds, at 2018-2-21 17:47"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "08150F95F1224394B74C2563C3254D66"
+    },
+    "cell_type" : "code",
+    "source" : "struct.treeString",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "res39: String = \n\"root\n |-- a: integer (nullable = true)\n |-- b: boolean (nullable = true)\n |-- c: long (nullable = false)\n |-- d: integer (nullable = true)\n |-- e: string (nullable = true)\n |-- f: boolean (nullable = true)\n |-- g: long (nullable = true)\n\"\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : "root\n |-- a: integer (nullable = true)\n |-- b: boolean (nullable = true)\n |-- c: long (nullable = false)\n |-- d: integer (nullable = true)\n |-- e: string (nullable = true)\n |-- f: boolean (nullable = true)\n |-- g: long (nullable = true)\n"
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 29,
+      "time" : "Took: 812 milliseconds, at 2018-2-21 17:47"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "443AC9F54F4A475B8E3D0C8E4BB1F5FF"
+    },
+    "cell_type" : "code",
+    "source" : "struct.printTreeString",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "root\n |-- a: integer (nullable = true)\n |-- b: boolean (nullable = true)\n |-- c: long (nullable = false)\n |-- d: integer (nullable = true)\n |-- e: string (nullable = true)\n |-- f: boolean (nullable = true)\n |-- g: long (nullable = true)\n\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 30,
+      "time" : "Took: 857 milliseconds, at 2018-2-21 17:47"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "83E7485ECD624E898841D4C7829C8721"
+    },
+    "cell_type" : "code",
+    "source" : "struct.length",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "res43: Int = 7\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : "7"
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 31,
+      "time" : "Took: 789 milliseconds, at 2018-2-21 17:47"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "D16748C395834D3F978EF1E3900E0321"
+    },
+    "cell_type" : "code",
+    "source" : "struct.iterator foreach println",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "StructField(a,IntegerType,true)\nStructField(b,BooleanType,true)\nStructField(c,LongType,false)\nStructField(d,IntegerType,true)\nStructField(e,StringType,true)\nStructField(f,BooleanType,true)\nStructField(g,LongType,true)\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 32,
+      "time" : "Took: 822 milliseconds, at 2018-2-21 17:47"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "020E2CD106824D609858F0499CC43C88"
+    },
+    "cell_type" : "code",
+    "source" : "struct.defaultSize //The default size of a value of the StructType is the total default sizes of all field types.",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "res47: Int = 4122\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : "4122"
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 33,
+      "time" : "Took: 847 milliseconds, at 2018-2-21 17:47"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "presentation" : {
+        "tabs_state" : "{\n  \"tab_id\": \"#tab2068286667-0\"\n}",
+        "pivot_chart_state" : "{\n  \"hiddenAttributes\": [],\n  \"menuLimit\": 200,\n  \"cols\": [],\n  \"rows\": [],\n  \"vals\": [],\n  \"exclusions\": {},\n  \"inclusions\": {},\n  \"unusedAttrsVertical\": 85,\n  \"autoSortUnusedAttrs\": false,\n  \"inclusionsInfo\": {},\n  \"aggregatorName\": \"Count\",\n  \"rendererName\": \"Table\"\n}"
+      },
+      "id" : "E57E3D099BB5495288F22A11C4D69EAF"
+    },
+    "cell_type" : "code",
+    "source" : "struct.fieldNames",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "res49: Array[String] = Array(a, b, c, d, e, f, g)\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : "<div>\n      <script data-this=\"{&quot;dataId&quot;:&quot;anon999871abfafa8945e91cb8adced7fee6&quot;,&quot;dataInit&quot;:[],&quot;genId&quot;:&quot;2068286667&quot;}\" type=\"text/x-scoped-javascript\">/*<![CDATA[*/req(['../javascripts/notebook/playground','../javascripts/notebook/magic/tabs'], \n      function(playground, _magictabs) {\n        // data ==> data-this (in observable.js's scopedEval) ==> this in JS => { dataId, dataInit, ... }\n        // this ==> scope (in observable.js's scopedEval) ==> this.parentElement ==> div.container below (toHtml)\n\n        playground.call(data,\n                        this\n                        ,\n                        {\n    \"f\": _magictabs,\n    \"o\": {}\n  }\n  \n                        \n                        \n                      );\n      }\n    );/*]]>*/</script>\n    <div>\n      <div>\n        <ul class=\"nav nav-tabs\" id=\"ul2068286667\"><li>\n              <a href=\"#tab2068286667-0\"><i class=\"fa fa-table\"/></a>\n            </li><li>\n              <a href=\"#tab2068286667-1\"><i class=\"fa fa-cubes\"/></a>\n            </li></ul>\n\n        <div class=\"tab-content\" id=\"tab2068286667\"><div class=\"tab-pane\" id=\"tab2068286667-0\">\n            <div>\n      <script data-this=\"{&quot;dataId&quot;:&quot;anona994bd483728deb4a00b2b534a084d5c&quot;,&quot;dataInit&quot;:[{&quot;string value&quot;:&quot;a&quot;},{&quot;string value&quot;:&quot;b&quot;},{&quot;string value&quot;:&quot;c&quot;},{&quot;string value&quot;:&quot;d&quot;},{&quot;string value&quot;:&quot;e&quot;},{&quot;string value&quot;:&quot;f&quot;},{&quot;string value&quot;:&quot;g&quot;}],&quot;genId&quot;:&quot;335412511&quot;}\" type=\"text/x-scoped-javascript\">/*<![CDATA[*/req(['../javascripts/notebook/playground','../javascripts/notebook/magic/tableChart'], \n      function(playground, _magictableChart) {\n        // data ==> data-this (in observable.js's scopedEval) ==> this in JS => { dataId, dataInit, ... }\n        // this ==> scope (in observable.js's scopedEval) ==> this.parentElement ==> div.container below (toHtml)\n\n        playground.call(data,\n                        this\n                        ,\n                        {\n    \"f\": _magictableChart,\n    \"o\": {\"headers\":[\"string value\"],\"width\":600,\"height\":400}\n  }\n  \n                        \n                        \n                      );\n      }\n    );/*]]>*/</script>\n    <div>\n      <span class=\"chart-total-item-count\"><p data-bind=\"text: value\"><script data-this=\"{&quot;valueId&quot;:&quot;anond5ef0f6b17ee852e1f1a6bb15f8244f0&quot;,&quot;initialValue&quot;:&quot;7&quot;}\" type=\"text/x-scoped-javascript\">/*<![CDATA[*/\nreq(\n['observable', 'knockout'],\nfunction (O, ko) {\n  ko.applyBindings({\n      value: O.makeObservable(valueId, initialValue)\n    },\n    this\n  );\n});\n        /*]]>*/</script></p> entries total</span>\n      <span class=\"chart-sampling-warning\"><p data-bind=\"text: value\"><script data-this=\"{&quot;valueId&quot;:&quot;anon5e1a4c64e402249efb8636a4df8ae7bd&quot;,&quot;initialValue&quot;:&quot;&quot;}\" type=\"text/x-scoped-javascript\">/*<![CDATA[*/\nreq(\n['observable', 'knockout'],\nfunction (O, ko) {\n  ko.applyBindings({\n      value: O.makeObservable(valueId, initialValue)\n    },\n    this\n  );\n});\n        /*]]>*/</script></p></span>\n      <div>\n      </div>\n    </div></div>\n            </div><div class=\"tab-pane\" id=\"tab2068286667-1\">\n            <div>\n      <script data-this=\"{&quot;dataId&quot;:&quot;anon7e5e09669fe9137c8eb64eba15b58f8c&quot;,&quot;dataInit&quot;:[{&quot;string value&quot;:&quot;a&quot;},{&quot;string value&quot;:&quot;b&quot;},{&quot;string value&quot;:&quot;c&quot;},{&quot;string value&quot;:&quot;d&quot;},{&quot;string value&quot;:&quot;e&quot;},{&quot;string value&quot;:&quot;f&quot;},{&quot;string value&quot;:&quot;g&quot;}],&quot;genId&quot;:&quot;1072080892&quot;}\" type=\"text/x-scoped-javascript\">/*<![CDATA[*/req(['../javascripts/notebook/playground','../javascripts/notebook/magic/pivotChart'], \n      function(playground, _magicpivotChart) {\n        // data ==> data-this (in observable.js's scopedEval) ==> this in JS => { dataId, dataInit, ... }\n        // this ==> scope (in observable.js's scopedEval) ==> this.parentElement ==> div.container below (toHtml)\n\n        playground.call(data,\n                        this\n                        ,\n                        {\n    \"f\": _magicpivotChart,\n    \"o\": {\"width\":600,\"height\":400,\"derivedAttributes\":{},\"extraOptions\":{}}\n  }\n  \n                        \n                        \n                      );\n      }\n    );/*]]>*/</script>\n    <div>\n      <span class=\"chart-total-item-count\"><p data-bind=\"text: value\"><script data-this=\"{&quot;valueId&quot;:&quot;anon8ae0d3f573c59c3a00dc397a4c0f3019&quot;,&quot;initialValue&quot;:&quot;7&quot;}\" type=\"text/x-scoped-javascript\">/*<![CDATA[*/\nreq(\n['observable', 'knockout'],\nfunction (O, ko) {\n  ko.applyBindings({\n      value: O.makeObservable(valueId, initialValue)\n    },\n    this\n  );\n});\n        /*]]>*/</script></p> entries total</span>\n      <span class=\"chart-sampling-warning\"><p data-bind=\"text: value\"><script data-this=\"{&quot;valueId&quot;:&quot;anon87795c8b4e9d310e033b19790ceb494d&quot;,&quot;initialValue&quot;:&quot;&quot;}\" type=\"text/x-scoped-javascript\">/*<![CDATA[*/\nreq(\n['observable', 'knockout'],\nfunction (O, ko) {\n  ko.applyBindings({\n      value: O.makeObservable(valueId, initialValue)\n    },\n    this\n  );\n});\n        /*]]>*/</script></p></span>\n      <div>\n      </div>\n    </div></div>\n            </div></div>\n      </div>\n    </div></div>"
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 34,
+      "time" : "Took: 786 milliseconds, at 2018-2-21 17:47"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "presentation" : {
+        "tabs_state" : "{\n  \"tab_id\": \"#tab741408483-0\"\n}",
+        "pivot_chart_state" : "{\n  \"hiddenAttributes\": [],\n  \"menuLimit\": 200,\n  \"cols\": [],\n  \"rows\": [],\n  \"vals\": [],\n  \"exclusions\": {},\n  \"inclusions\": {},\n  \"unusedAttrsVertical\": 85,\n  \"autoSortUnusedAttrs\": false,\n  \"inclusionsInfo\": {},\n  \"aggregatorName\": \"Count\",\n  \"rendererName\": \"Table\"\n}"
+      },
+      "id" : "484CD6FBC6BC42F785ADD29C5A3676EC"
+    },
+    "cell_type" : "code",
+    "source" : "struct.fields",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "res51: Array[org.apache.spark.sql.types.StructField] = Array(StructField(a,IntegerType,true), StructField(b,BooleanType,true), StructField(c,LongType,false), StructField(d,IntegerType,true), StructField(e,StringType,true), StructField(f,BooleanType,true), StructField(g,LongType,true))\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : "<div>\n      <script data-this=\"{&quot;dataId&quot;:&quot;anon37f266a3b84dea64fca90ea356b5dbfd&quot;,&quot;dataInit&quot;:[],&quot;genId&quot;:&quot;741408483&quot;}\" type=\"text/x-scoped-javascript\">/*<![CDATA[*/req(['../javascripts/notebook/playground','../javascripts/notebook/magic/tabs'], \n      function(playground, _magictabs) {\n        // data ==> data-this (in observable.js's scopedEval) ==> this in JS => { dataId, dataInit, ... }\n        // this ==> scope (in observable.js's scopedEval) ==> this.parentElement ==> div.container below (toHtml)\n\n        playground.call(data,\n                        this\n                        ,\n                        {\n    \"f\": _magictabs,\n    \"o\": {}\n  }\n  \n                        \n                        \n                      );\n      }\n    );/*]]>*/</script>\n    <div>\n      <div>\n        <ul class=\"nav nav-tabs\" id=\"ul741408483\"><li>\n              <a href=\"#tab741408483-0\"><i class=\"fa fa-table\"/></a>\n            </li><li>\n              <a href=\"#tab741408483-1\"><i class=\"fa fa-cubes\"/></a>\n            </li></ul>\n\n        <div class=\"tab-content\" id=\"tab741408483\"><div class=\"tab-pane\" id=\"tab741408483-0\">\n            <div>\n      <script data-this=\"{&quot;dataId&quot;:&quot;anon56fee4ed9f472a5bb91444420f926c15&quot;,&quot;dataInit&quot;:[{&quot;name&quot;:&quot;a&quot;,&quot;dataType&quot;:&quot;IntegerType&quot;,&quot;nullable&quot;:true,&quot;metadata&quot;:&quot;{}&quot;},{&quot;name&quot;:&quot;b&quot;,&quot;dataType&quot;:&quot;BooleanType&quot;,&quot;nullable&quot;:true,&quot;metadata&quot;:&quot;{}&quot;},{&quot;name&quot;:&quot;c&quot;,&quot;dataType&quot;:&quot;LongType&quot;,&quot;nullable&quot;:false,&quot;metadata&quot;:&quot;{}&quot;},{&quot;name&quot;:&quot;d&quot;,&quot;dataType&quot;:&quot;IntegerType&quot;,&quot;nullable&quot;:true,&quot;metadata&quot;:&quot;{}&quot;},{&quot;name&quot;:&quot;e&quot;,&quot;dataType&quot;:&quot;StringType&quot;,&quot;nullable&quot;:true,&quot;metadata&quot;:&quot;{}&quot;},{&quot;name&quot;:&quot;f&quot;,&quot;dataType&quot;:&quot;BooleanType&quot;,&quot;nullable&quot;:true,&quot;metadata&quot;:&quot;{}&quot;},{&quot;name&quot;:&quot;g&quot;,&quot;dataType&quot;:&quot;LongType&quot;,&quot;nullable&quot;:true,&quot;metadata&quot;:&quot;{}&quot;}],&quot;genId&quot;:&quot;947656803&quot;}\" type=\"text/x-scoped-javascript\">/*<![CDATA[*/req(['../javascripts/notebook/playground','../javascripts/notebook/magic/tableChart'], \n      function(playground, _magictableChart) {\n        // data ==> data-this (in observable.js's scopedEval) ==> this in JS => { dataId, dataInit, ... }\n        // this ==> scope (in observable.js's scopedEval) ==> this.parentElement ==> div.container below (toHtml)\n\n        playground.call(data,\n                        this\n                        ,\n                        {\n    \"f\": _magictableChart,\n    \"o\": {\"headers\":[\"name\",\"dataType\",\"nullable\",\"metadata\"],\"width\":600,\"height\":400}\n  }\n  \n                        \n                        \n                      );\n      }\n    );/*]]>*/</script>\n    <div>\n      <span class=\"chart-total-item-count\"><p data-bind=\"text: value\"><script data-this=\"{&quot;valueId&quot;:&quot;anon025bbd94ec03928dcb40c044905bc17b&quot;,&quot;initialValue&quot;:&quot;7&quot;}\" type=\"text/x-scoped-javascript\">/*<![CDATA[*/\nreq(\n['observable', 'knockout'],\nfunction (O, ko) {\n  ko.applyBindings({\n      value: O.makeObservable(valueId, initialValue)\n    },\n    this\n  );\n});\n        /*]]>*/</script></p> entries total</span>\n      <span class=\"chart-sampling-warning\"><p data-bind=\"text: value\"><script data-this=\"{&quot;valueId&quot;:&quot;anon2ed7a3f5ff687d0a85a9f1ebfb9fc59d&quot;,&quot;initialValue&quot;:&quot;&quot;}\" type=\"text/x-scoped-javascript\">/*<![CDATA[*/\nreq(\n['observable', 'knockout'],\nfunction (O, ko) {\n  ko.applyBindings({\n      value: O.makeObservable(valueId, initialValue)\n    },\n    this\n  );\n});\n        /*]]>*/</script></p></span>\n      <div>\n      </div>\n    </div></div>\n            </div><div class=\"tab-pane\" id=\"tab741408483-1\">\n            <div>\n      <script data-this=\"{&quot;dataId&quot;:&quot;anonac8886f121673586ebc14aaec27ef09f&quot;,&quot;dataInit&quot;:[{&quot;name&quot;:&quot;a&quot;,&quot;dataType&quot;:&quot;IntegerType&quot;,&quot;nullable&quot;:true,&quot;metadata&quot;:&quot;{}&quot;},{&quot;name&quot;:&quot;b&quot;,&quot;dataType&quot;:&quot;BooleanType&quot;,&quot;nullable&quot;:true,&quot;metadata&quot;:&quot;{}&quot;},{&quot;name&quot;:&quot;c&quot;,&quot;dataType&quot;:&quot;LongType&quot;,&quot;nullable&quot;:false,&quot;metadata&quot;:&quot;{}&quot;},{&quot;name&quot;:&quot;d&quot;,&quot;dataType&quot;:&quot;IntegerType&quot;,&quot;nullable&quot;:true,&quot;metadata&quot;:&quot;{}&quot;},{&quot;name&quot;:&quot;e&quot;,&quot;dataType&quot;:&quot;StringType&quot;,&quot;nullable&quot;:true,&quot;metadata&quot;:&quot;{}&quot;},{&quot;name&quot;:&quot;f&quot;,&quot;dataType&quot;:&quot;BooleanType&quot;,&quot;nullable&quot;:true,&quot;metadata&quot;:&quot;{}&quot;},{&quot;name&quot;:&quot;g&quot;,&quot;dataType&quot;:&quot;LongType&quot;,&quot;nullable&quot;:true,&quot;metadata&quot;:&quot;{}&quot;}],&quot;genId&quot;:&quot;1104362595&quot;}\" type=\"text/x-scoped-javascript\">/*<![CDATA[*/req(['../javascripts/notebook/playground','../javascripts/notebook/magic/pivotChart'], \n      function(playground, _magicpivotChart) {\n        // data ==> data-this (in observable.js's scopedEval) ==> this in JS => { dataId, dataInit, ... }\n        // this ==> scope (in observable.js's scopedEval) ==> this.parentElement ==> div.container below (toHtml)\n\n        playground.call(data,\n                        this\n                        ,\n                        {\n    \"f\": _magicpivotChart,\n    \"o\": {\"width\":600,\"height\":400,\"derivedAttributes\":{},\"extraOptions\":{}}\n  }\n  \n                        \n                        \n                      );\n      }\n    );/*]]>*/</script>\n    <div>\n      <span class=\"chart-total-item-count\"><p data-bind=\"text: value\"><script data-this=\"{&quot;valueId&quot;:&quot;anon84e3a34cb2f4f9045c9f6132bde22715&quot;,&quot;initialValue&quot;:&quot;7&quot;}\" type=\"text/x-scoped-javascript\">/*<![CDATA[*/\nreq(\n['observable', 'knockout'],\nfunction (O, ko) {\n  ko.applyBindings({\n      value: O.makeObservable(valueId, initialValue)\n    },\n    this\n  );\n});\n        /*]]>*/</script></p> entries total</span>\n      <span class=\"chart-sampling-warning\"><p data-bind=\"text: value\"><script data-this=\"{&quot;valueId&quot;:&quot;anond3b235d6f13b1cc19db9263acf79a63c&quot;,&quot;initialValue&quot;:&quot;&quot;}\" type=\"text/x-scoped-javascript\">/*<![CDATA[*/\nreq(\n['observable', 'knockout'],\nfunction (O, ko) {\n  ko.applyBindings({\n      value: O.makeObservable(valueId, initialValue)\n    },\n    this\n  );\n});\n        /*]]>*/</script></p></span>\n      <div>\n      </div>\n    </div></div>\n            </div></div>\n      </div>\n    </div></div>"
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 35,
+      "time" : "Took: 780 milliseconds, at 2018-2-21 17:47"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "EF6E1544B5494B66912711956CB2F353"
+    },
+    "cell_type" : "code",
+    "source" : "struct.simpleString //Readable string representation for the type.",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "res53: String = struct<a:int,b:boolean,c:bigint,d:int,e:string,f:boolean,g:bigint>\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : "struct&lt;a:int,b:boolean,c:bigint,d:int,e:string,f:boolean,g:bigint&gt;"
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 36,
+      "time" : "Took: 814 milliseconds, at 2018-2-21 17:47"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "A927895B06A1454A8AED0F14170A5BC7"
+    },
+    "cell_type" : "code",
+    "source" : "// Lets say we have a string input of columns separated by space (assume the string is passed as a input to the program)\nval schemaString = \"name age\"",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "schemaString: String = name age\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 37,
+      "time" : "Took: 588 milliseconds, at 2018-2-21 17:47"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "B856230CE2554C898BD5E2AFB7D16E65"
+    },
+    "cell_type" : "code",
+    "source" : "val schema = StructType(\n  schemaString.split(\" \").map(x => StructField(x, StringType, true))\n  )",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "schema: org.apache.spark.sql.types.StructType = StructType(StructField(name,StringType,true), StructField(age,StringType,true))\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 38,
+      "time" : "Took: 646 milliseconds, at 2018-2-21 17:47"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "FBA2ED9C1AFA49998FBD7EBFD8B7BEC3"
+    },
+    "cell_type" : "code",
+    "source" : "// The above snippet can be extended if only the input schema metadata is passed in proper format with relevant details, \n// we can build the Schema programactically using higher order funcations",
+    "outputs" : [ {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 39,
+      "time" : "Took: 752 milliseconds, at 2018-2-21 17:47"
+    } ]
+  }, {
+    "metadata" : {
+      "id" : "993870F9B4BB46BC9E8E463831823B7A"
+    },
+    "cell_type" : "markdown",
+    "source" : "This time, instead of just using the StructType constructor, lets us ArrayType"
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "F38DF36E014D4E579888F07DA76D5E2C"
+    },
+    "cell_type" : "code",
+    "source" : "val rowArraySeq = Seq(\n      Row(1, Row(\"a\", \"b\"), 8.00, Array(1,2)),\n      Row(2, Row(\"c\", \"d\"), 9.00, Array(3,4,5))\n    )",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "rowArraySeq: Seq[org.apache.spark.sql.Row] = List([1,[a,b],8.0,[I@c1dbf12], [2,[c,d],9.0,[I@7711b393])\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 40,
+      "time" : "Took: 575 milliseconds, at 2018-2-21 17:47"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "23A167F6B20D454A8738DE7DD6FBAE38"
+    },
+    "cell_type" : "code",
+    "source" : "val rowArrayRDD = sc.parallelize(rowArraySeq, 4)",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "rowArrayRDD: org.apache.spark.rdd.RDD[org.apache.spark.sql.Row] = ParallelCollectionRDD[15] at parallelize at <console>:76\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 41,
+      "time" : "Took: 573 milliseconds, at 2018-2-21 17:47"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "6FAD0955E485433D8C5862DE3C671BC4"
+    },
+    "cell_type" : "code",
+    "source" : "val rowArraySchema = ((new StructType)\n                      .add(\"a\", \"int\")\n                      .add(\"dummy\", ((new StructType)\n                           .add(\"x\", \"string\")\n                           .add(\"y\", \"string\")))\n                      .add(\"d\", \"double\", true)\n                      .add(\"gummy\", ArrayType(IntegerType)))                          \n",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "rowArraySchema: org.apache.spark.sql.types.StructType = StructType(StructField(a,IntegerType,true), StructField(dummy,StructType(StructField(x,StringType,true), StructField(y,StringType,true)),true), StructField(d,DoubleType,true), StructField(gummy,ArrayType(IntegerType,true),true))\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 42,
+      "time" : "Took: 591 milliseconds, at 2018-2-21 17:47"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "9130FD650EE042EEBDC53300016CE065"
+    },
+    "cell_type" : "code",
+    "source" : "rowArraySchema.simpleString",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "res62: String = struct<a:int,dummy:struct<x:string,y:string>,d:double,gummy:array<int>>\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : "struct&lt;a:int,dummy:struct&lt;x:string,y:string&gt;,d:double,gummy:array&lt;int&gt;&gt;"
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 43,
+      "time" : "Took: 738 milliseconds, at 2018-2-21 17:47"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "101DB4210D3C4BDDB79EBFE80D54DD59"
+    },
+    "cell_type" : "code",
+    "source" : "val df2 = sqlContext.createDataFrame(rowArrayRDD, rowArraySchema)",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "df2: org.apache.spark.sql.DataFrame = [a: int, dummy: struct<x:string,y:string>, d: double, gummy: array<int>]\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 44,
+      "time" : "Took: 600 milliseconds, at 2018-2-21 17:47"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "BA412F0A7B56417A8A1AB414EFE386B5"
+    },
+    "cell_type" : "code",
+    "source" : "df2.show()",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "+---+-----+---+---------+\n|  a|dummy|  d|    gummy|\n+---+-----+---+---------+\n|  1|[a,b]|8.0|   [1, 2]|\n|  2|[c,d]|9.0|[3, 4, 5]|\n+---+-----+---+---------+\n\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 45,
+      "time" : "Took: 1 second 406 milliseconds, at 2018-2-21 17:47"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "DB38EAB5B1104671ACEEF7865018B284"
+    },
+    "cell_type" : "code",
+    "source" : "df2.select(col(\"a\"), df2(\"dummy\"), $\"d\", explode($\"gummy\").as(\"gummies\")).show",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "+---+-----+---+-------+\n|  a|dummy|  d|gummies|\n+---+-----+---+-------+\n|  1|[a,b]|8.0|      1|\n|  1|[a,b]|8.0|      2|\n|  2|[c,d]|9.0|      3|\n|  2|[c,d]|9.0|      4|\n|  2|[c,d]|9.0|      5|\n+---+-----+---+-------+\n\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 46,
+      "time" : "Took: 1 second 35 milliseconds, at 2018-2-21 17:47"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "25842D850DF048B08B0D512DFCCBE3F7"
+    },
+    "cell_type" : "code",
+    "source" : "df2.select($\"a\", size($\"gummy\").alias(\"gummy_cnt\")).show",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "+---+---------+\n|  a|gummy_cnt|\n+---+---------+\n|  1|        2|\n|  2|        3|\n+---+---------+\n\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 47,
+      "time" : "Took: 933 milliseconds, at 2018-2-21 17:47"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "AF23965988C546BF8AF3FDBCED21CCDF"
+    },
+    "cell_type" : "code",
+    "source" : "def newFlattenSchema(schema: StructType, prefix: String = null) : Array[Column] = {\n  schema.fields.flatMap(f => {\n    val colName = if (prefix == null) f.name else (prefix + \".\" + f.name)\n\n    f.dataType match {\n      case st: StructType => newFlattenSchema(st, colName)\n      case at: ArrayType => Array(explode(col(colName)))\n      case _ => Array(col(colName))\n    }\n  })\n}",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "newFlattenSchema: (schema: org.apache.spark.sql.types.StructType, prefix: String)Array[org.apache.spark.sql.Column]\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 48,
+      "time" : "Took: 730 milliseconds, at 2018-2-21 17:47"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "74ED94299FA740068069D505F3729DCC"
+    },
+    "cell_type" : "code",
+    "source" : "df2.select(newFlattenSchema(df2.schema) :_*).show",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "+---+---+---+---+---+\n|  a|  x|  y|  d|col|\n+---+---+---+---+---+\n|  1|  a|  b|8.0|  1|\n|  1|  a|  b|8.0|  2|\n|  2|  c|  d|9.0|  3|\n|  2|  c|  d|9.0|  4|\n|  2|  c|  d|9.0|  5|\n+---+---+---+---+---+\n\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 49,
+      "time" : "Took: 930 milliseconds, at 2018-2-21 17:47"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "72354374BAAD46A19C012E9F236D3BC8"
+    },
+    "cell_type" : "code",
+    "source" : "df2.show",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "+---+-----+---+---------+\n|  a|dummy|  d|    gummy|\n+---+-----+---+---------+\n|  1|[a,b]|8.0|   [1, 2]|\n|  2|[c,d]|9.0|[3, 4, 5]|\n+---+-----+---+---------+\n\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 50,
+      "time" : "Took: 819 milliseconds, at 2018-2-21 17:47"
+    } ]
+  }, {
+    "metadata" : {
+      "id" : "957CC5EE04D043A283B2E08396D72BC8"
+    },
+    "cell_type" : "markdown",
+    "source" : "MapType"
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "A0FC76448EA046D7A9C395B01522454D"
+    },
+    "cell_type" : "code",
+    "source" : "val rowMap = Seq(\n      Row(1, 8.00, Map(\"u\" -> 1,\"v\" -> 2)),\n      Row(2, 9.00, Map(\"x\" -> 3, \"y\" -> 4, \"z\" -> 5))\n    )",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "rowMap: Seq[org.apache.spark.sql.Row] = List([1,8.0,Map(u -> 1, v -> 2)], [2,9.0,Map(x -> 3, y -> 4, z -> 5)])\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 51,
+      "time" : "Took: 748 milliseconds, at 2018-2-21 17:47"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "47F73AF031304B988D277AB6E592BFDB"
+    },
+    "cell_type" : "code",
+    "source" : "val rowMapRDD = sc.parallelize(rowMap, 4)",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "rowMapRDD: org.apache.spark.rdd.RDD[org.apache.spark.sql.Row] = ParallelCollectionRDD[30] at parallelize at <console>:76\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 52,
+      "time" : "Took: 612 milliseconds, at 2018-2-21 17:47"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "9511B53D54F449FA890F81F01D8E5298"
+    },
+    "cell_type" : "code",
+    "source" : "val rowMapSchema = ((new StructType)\n                 .add(\"a\", IntegerType)\n                 .add(\"b\", DoubleType)\n                 .add(\"c\", MapType(StringType, IntegerType))\n                 )",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "rowMapSchema: org.apache.spark.sql.types.StructType = StructType(StructField(a,IntegerType,true), StructField(b,DoubleType,true), StructField(c,MapType(StringType,IntegerType,true),true))\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 53,
+      "time" : "Took: 560 milliseconds, at 2018-2-21 17:47"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "F1B85FB05DAF4107890AE13E2956AF32"
+    },
+    "cell_type" : "code",
+    "source" : "val df3 = sqlContext.createDataFrame(rowMapRDD, rowMapSchema)",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "df3: org.apache.spark.sql.DataFrame = [a: int, b: double, c: map<string,int>]\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 54,
+      "time" : "Took: 627 milliseconds, at 2018-2-21 17:47"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "8BDF744BC98443BA97BA357AF82CE23A"
+    },
+    "cell_type" : "code",
+    "source" : "df3.show",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "+---+---+--------------------+\n|  a|  b|                   c|\n+---+---+--------------------+\n|  1|8.0| Map(u -> 1, v -> 2)|\n|  2|9.0|Map(x -> 3, y -> ...|\n+---+---+--------------------+\n\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 55,
+      "time" : "Took: 788 milliseconds, at 2018-2-21 17:47"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "4651464403B1454195F563AE8C80539A"
+    },
+    "cell_type" : "code",
+    "source" : "df3.select($\"a\", size($\"c\")).show",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "+---+-------+\n|  a|size(c)|\n+---+-------+\n|  1|      2|\n|  2|      3|\n+---+-------+\n\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 56,
+      "time" : "Took: 915 milliseconds, at 2018-2-21 17:47"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "BE7578726775433585EB40FFB068C381"
+    },
+    "cell_type" : "code",
+    "source" : "df3.select($\"a\", explode($\"c\")).show // Note: you get one column for the keys and one for the values from MapType column",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "+---+---+-----+\n|  a|key|value|\n+---+---+-----+\n|  1|  u|    1|\n|  1|  v|    2|\n|  2|  x|    3|\n|  2|  y|    4|\n|  2|  z|    5|\n+---+---+-----+\n\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 57,
+      "time" : "Took: 952 milliseconds, at 2018-2-21 17:47"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "1F40E27594034BF28A6159E6E499B80A"
+    },
+    "cell_type" : "code",
+    "source" : "// MapType is actually a more flexible version of StructType, since we can select down into fields within a column\n// and those rows where an element is missing just returns a null\n// key \"x\" is present for a = 2 and \"u\" is present in a = 1.\ndf3.select($\"a\", $\"c\".getItem(\"x\"), $\"c\".getItem(\"u\")).show",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "+---+----+----+\n|  a|c[x]|c[u]|\n+---+----+----+\n|  1|null|   1|\n|  2|   3|null|\n+---+----+----+\n\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 58,
+      "time" : "Took: 976 milliseconds, at 2018-2-21 17:47"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "AB1378848F3B41CDA4BCF1B7215FFBD6"
+    },
+    "cell_type" : "code",
+    "source" : "// Another way to select keys from the map type field\ndf3.select($\"a\", $\"c.x\", $\"c.u\").show",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "+---+----+----+\n|  a|   x|   u|\n+---+----+----+\n|  1|null|   1|\n|  2|   3|null|\n+---+----+----+\n\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 59,
+      "time" : "Took: 841 milliseconds, at 2018-2-21 17:47"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "74D0770590CA4AF396538285637C9C07"
+    },
+    "cell_type" : "code",
+    "source" : "def improvedFlattenSchema(schema: StructType, prefix: String = null) : Array[Column] = {\n  schema.fields.flatMap(f => {\n    val colName = if (prefix == null) f.name else (prefix + \".\" + f.name)\n\n    f.dataType match {\n      case st: StructType => improvedFlattenSchema(st, colName)\n      case at: ArrayType => Array(explode(col(colName)))\n      case mt: MapType => Array(explode(col(colName)))\n      case _ => Array(col(colName))\n    }\n  })\n}",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "improvedFlattenSchema: (schema: org.apache.spark.sql.types.StructType, prefix: String)Array[org.apache.spark.sql.Column]\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 60,
+      "time" : "Took: 636 milliseconds, at 2018-2-21 17:47"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "3769C1EE7AD342E685D17B8ED4D2892E"
+    },
+    "cell_type" : "code",
+    "source" : "df3.select(improvedFlattenSchema(df3.schema) :_*).show",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "+---+---+---+-----+\n|  a|  b|key|value|\n+---+---+---+-----+\n|  1|8.0|  u|    1|\n|  1|8.0|  v|    2|\n|  2|9.0|  x|    3|\n|  2|9.0|  y|    4|\n|  2|9.0|  z|    5|\n+---+---+---+-----+\n\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 61,
+      "time" : "Took: 874 milliseconds, at 2018-2-21 17:47"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "3EA7A5ECFD7B49DD828836EF7FBB08BF"
+    },
+    "cell_type" : "code",
+    "source" : "df2.select(improvedFlattenSchema(df2.schema) :_*).show",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "+---+---+---+---+---+\n|  a|  x|  y|  d|col|\n+---+---+---+---+---+\n|  1|  a|  b|8.0|  1|\n|  1|  a|  b|8.0|  2|\n|  2|  c|  d|9.0|  3|\n|  2|  c|  d|9.0|  4|\n|  2|  c|  d|9.0|  5|\n+---+---+---+---+---+\n\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 62,
+      "time" : "Took: 807 milliseconds, at 2018-2-21 17:47"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "727F3F0B09D544B7AA58C08BF0309E8B"
+    },
+    "cell_type" : "code",
+    "source" : "df.select(improvedFlattenSchema(df.schema) :_*).show",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "+---+---+---+----+---+---+\n| id|  x|  y| amt|  p|  q|\n+---+---+---+----+---+---+\n|  1|  a|  b|40.0|  1|  2|\n|  2|  c|  d|50.0|  3|  4|\n+---+---+---+----+---+---+\n\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 63,
+      "time" : "Took: 793 milliseconds, at 2018-2-21 17:47"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "2A6BC87CB69B4E8F898FB6BC2F6160F9"
+    },
+    "cell_type" : "code",
+    "source" : "val jsonStr = \"\"\"{\"user\":\"gT35Hhhre9m\",\"dates\":[\"2016-01-29\",\"2016-01-28\"],\"status\":\"OK\",\"reason\":\"some reason\",\"content\":[{\"foo\":123,\"bar\":\"val1\"},{\"foo\":456,\"bar\":\"val2\"},{\"foo\":789,\"bar\":\"val3\"},{\"foo\":124,\"bar\":\"val4\"},{\"foo\":126,\"bar\":\"val5\"}]}\"\"\"::Nil",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "jsonStr: List[String] = List({\"user\":\"gT35Hhhre9m\",\"dates\":[\"2016-01-29\",\"2016-01-28\"],\"status\":\"OK\",\"reason\":\"some reason\",\"content\":[{\"foo\":123,\"bar\":\"val1\"},{\"foo\":456,\"bar\":\"val2\"},{\"foo\":789,\"bar\":\"val3\"},{\"foo\":124,\"bar\":\"val4\"},{\"foo\":126,\"bar\":\"val5\"}]})\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 64,
+      "time" : "Took: 628 milliseconds, at 2018-2-21 17:47"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "632F0D0CD509405582186CFB39B4C938"
+    },
+    "cell_type" : "code",
+    "source" : "val sch = ((new StructType)\n           .add(\"user\", \"string\")\n           .add(\"dates\", ArrayType(StringType))\n           .add(\"status\", \"string\")\n           .add(\"reason\", \"string\")\n           .add(\"content\", ArrayType((new StructType)\n                                     .add(\"foo\", \"int\")\n                                     .add(\"bar\", \"string\"))\n                )\n           )",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "sch: org.apache.spark.sql.types.StructType = StructType(StructField(user,StringType,true), StructField(dates,ArrayType(StringType,true),true), StructField(status,StringType,true), StructField(reason,StringType,true), StructField(content,ArrayType(StructType(StructField(foo,IntegerType,true), StructField(bar,StringType,true)),true),true))\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 65,
+      "time" : "Took: 643 milliseconds, at 2018-2-21 17:47"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "5A45076E3BA84DB8B46BAF0E2A50EEE1"
+    },
+    "cell_type" : "code",
+    "source" : "val jsonRDD = sc.parallelize(jsonStr,4)",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "jsonRDD: org.apache.spark.rdd.RDD[String] = ParallelCollectionRDD[59] at parallelize at <console>:76\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 66,
+      "time" : "Took: 583 milliseconds, at 2018-2-21 17:47"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "B2479A123A4A405B82F8C2A1DC8C8DBA"
+    },
+    "cell_type" : "code",
+    "source" : "val jsonDF = sqlContext.read.schema(sch).json(jsonRDD)",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "jsonDF: org.apache.spark.sql.DataFrame = [user: string, dates: array<string>, status: string, reason: string, content: array<struct<foo:int,bar:string>>]\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 94,
+      "time" : "Took: 675 milliseconds, at 2018-2-21 18:34"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "2D9A7285F02F4634815D90A6E72732BA"
+    },
+    "cell_type" : "code",
+    "source" : "case class Element(bar: String, foo: Int)\ncase class JsonClass(user: String, dates: Array[String], status: String, reason: String, content: Array[Element])",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "defined class Element\ndefined class JsonClass\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 68,
+      "time" : "Took: 1 second 89 milliseconds, at 2018-2-21 17:47"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "presentation" : {
+        "tabs_state" : "{\n  \"tab_id\": \"#tab1586497435-0\"\n}",
+        "pivot_chart_state" : "{\n  \"hiddenAttributes\": [],\n  \"menuLimit\": 200,\n  \"cols\": [],\n  \"rows\": [],\n  \"vals\": [],\n  \"exclusions\": {},\n  \"inclusions\": {},\n  \"unusedAttrsVertical\": 85,\n  \"autoSortUnusedAttrs\": false,\n  \"inclusionsInfo\": {},\n  \"aggregatorName\": \"Count\",\n  \"rendererName\": \"Table\"\n}"
+      },
+      "id" : "94C5E77ABFCF4DD3B473A9481EA629DA"
+    },
+    "cell_type" : "code",
+    "source" : "val jsonDS = jsonDF.as[JsonClass]",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "jsonDS: org.apache.spark.sql.Dataset[JsonClass] = [user: string, dates: array<string>, status: string, reason: string, content: array<struct<bar:string,foo:int>>]\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 69,
+      "time" : "Took: 1 second 837 milliseconds, at 2018-2-21 17:47"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "6419D58C1580406C8815D6566615E36D"
+    },
+    "cell_type" : "code",
+    "source" : "sqlContext.read.schema(sch).json(jsonRDD).show",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "+-----------+--------------------+------+-----------+--------------------+\n|       user|               dates|status|     reason|             content|\n+-----------+--------------------+------+-----------+--------------------+\n|gT35Hhhre9m|[2016-01-29, 2016...|    OK|some reason|[[123,val1], [456...|\n+-----------+--------------------+------+-----------+--------------------+\n\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 97,
+      "time" : "Took: 973 milliseconds, at 2018-2-21 18:35"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "9F58C788AFB0470F801A05B28AB5CE17"
+    },
+    "cell_type" : "code",
+    "source" : "jsonDS.select($\"user\".as[String], explode($\"content\").as[Element]).show",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "+-----------+----------+\n|       user|       col|\n+-----------+----------+\n|gT35Hhhre9m|[123,val1]|\n|gT35Hhhre9m|[456,val2]|\n|gT35Hhhre9m|[789,val3]|\n|gT35Hhhre9m|[124,val4]|\n|gT35Hhhre9m|[126,val5]|\n+-----------+----------+\n\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 70,
+      "time" : "Took: 1 second 495 milliseconds, at 2018-2-21 17:47"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "529486389E0F435787B1B415B777F435"
+    },
+    "cell_type" : "code",
+    "source" : "val rowSeq = Seq(\n  Row(1, Row(\"a\", \"b\"), 40.00, Row(1,2)),\n  Row(2, Row(\"c\", \"d\"), 50.00, Row(3,4))\n )",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "rowSeq: Seq[org.apache.spark.sql.Row] = List([1,[a,b],40.0,[1,2]], [2,[c,d],50.0,[3,4]])\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 76,
+      "time" : "Took: 611 milliseconds, at 2018-2-21 18:1"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "CC7EF233E7F14CD68220788EF3B69230"
+    },
+    "cell_type" : "code",
+    "source" : "case class Dummy(a: String, b: String)\ncase class Gummy(p: Integer, q: Integer)\ncase class Data(id: Integer, dummy: Dummy, amt: Double, gummy: Gummy) ",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "defined class Dummy\ndefined class Gummy\ndefined class Data\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 77,
+      "time" : "Took: 656 milliseconds, at 2018-2-21 18:3"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "AAE8B0A2B9B34E9C824C8A515D382678"
+    },
+    "cell_type" : "code",
+    "source" : "val rowRDD= sc.parallelize(rowSeq, 4)",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "rowRDD: org.apache.spark.rdd.RDD[org.apache.spark.sql.Row] = ParallelCollectionRDD[70] at parallelize at <console>:76\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 80,
+      "time" : "Took: 645 milliseconds, at 2018-2-21 18:5"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "883BC87429274EE9B9F1E4569B417E38"
+    },
+    "cell_type" : "code",
+    "source" : "val rowDFF = rowRDD.map(x => Data(x(0).asInstanceOf[Integer], x(1).asInstanceOf[Dummy], x(2).asInstanceOf[Double], x(3).asInstanceOf[Gummy])).toDF",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "rowDFF: org.apache.spark.sql.DataFrame = [id: int, dummy: struct<a:string,b:string>, amt: double, gummy: struct<p:int,q:int>]\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 92,
+      "time" : "Took: 730 milliseconds, at 2018-2-21 18:12"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "1079551C614D422C80C891D862B1AADB"
+    },
+    "cell_type" : "code",
+    "source" : "rowDFF.show",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "org.apache.spark.SparkException: Job aborted due to stage failure: Task 0 in stage 41.0 failed 1 times, most recent failure: Lost task 0.0 in stage 41.0 (TID 81, localhost): java.lang.ClassCastException: org.apache.spark.sql.catalyst.expressions.GenericRow cannot be cast to $iwC$$iwC$Dummy\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$anonfun$1.apply(<console>:84)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$anonfun$1.apply(<console>:84)\n\tat scala.collection.Iterator$$anon$11.next(Iterator.scala:328)\n\tat scala.collection.Iterator$$anon$11.next(Iterator.scala:328)\n\tat scala.collection.Iterator$$anon$11.next(Iterator.scala:328)\n\tat scala.collection.Iterator$$anon$10.next(Iterator.scala:312)\n\tat scala.collection.Iterator$class.foreach(Iterator.scala:727)\n\tat scala.collection.AbstractIterator.foreach(Iterator.scala:1157)\n\tat scala.collection.generic.Growable$class.$plus$plus$eq(Growable.scala:48)\n\tat scala.collection.mutable.ArrayBuffer.$plus$plus$eq(ArrayBuffer.scala:103)\n\tat scala.collection.mutable.ArrayBuffer.$plus$plus$eq(ArrayBuffer.scala:47)\n\tat scala.collection.TraversableOnce$class.to(TraversableOnce.scala:273)\n\tat scala.collection.AbstractIterator.to(Iterator.scala:1157)\n\tat scala.collection.TraversableOnce$class.toBuffer(TraversableOnce.scala:265)\n\tat scala.collection.AbstractIterator.toBuffer(Iterator.scala:1157)\n\tat scala.collection.TraversableOnce$class.toArray(TraversableOnce.scala:252)\n\tat scala.collection.AbstractIterator.toArray(Iterator.scala:1157)\n\tat org.apache.spark.sql.execution.SparkPlan$$anonfun$5.apply(SparkPlan.scala:212)\n\tat org.apache.spark.sql.execution.SparkPlan$$anonfun$5.apply(SparkPlan.scala:212)\n\tat org.apache.spark.SparkContext$$anonfun$runJob$5.apply(SparkContext.scala:1858)\n\tat org.apache.spark.SparkContext$$anonfun$runJob$5.apply(SparkContext.scala:1858)\n\tat org.apache.spark.scheduler.ResultTask.runTask(ResultTask.scala:66)\n\tat org.apache.spark.scheduler.Task.run(Task.scala:89)\n\tat org.apache.spark.executor.Executor$TaskRunner.run(Executor.scala:213)\n\tat java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)\n\tat java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)\n\tat java.lang.Thread.run(Thread.java:748)\n\nDriver stacktrace:\n\tat org.apache.spark.scheduler.DAGScheduler.org$apache$spark$scheduler$DAGScheduler$$failJobAndIndependentStages(DAGScheduler.scala:1431)\n\tat org.apache.spark.scheduler.DAGScheduler$$anonfun$abortStage$1.apply(DAGScheduler.scala:1419)\n\tat org.apache.spark.scheduler.DAGScheduler$$anonfun$abortStage$1.apply(DAGScheduler.scala:1418)\n\tat scala.collection.mutable.ResizableArray$class.foreach(ResizableArray.scala:59)\n\tat scala.collection.mutable.ArrayBuffer.foreach(ArrayBuffer.scala:47)\n\tat org.apache.spark.scheduler.DAGScheduler.abortStage(DAGScheduler.scala:1418)\n\tat org.apache.spark.scheduler.DAGScheduler$$anonfun$handleTaskSetFailed$1.apply(DAGScheduler.scala:799)\n\tat org.apache.spark.scheduler.DAGScheduler$$anonfun$handleTaskSetFailed$1.apply(DAGScheduler.scala:799)\n\tat scala.Option.foreach(Option.scala:236)\n\tat org.apache.spark.scheduler.DAGScheduler.handleTaskSetFailed(DAGScheduler.scala:799)\n\tat org.apache.spark.scheduler.DAGSchedulerEventProcessLoop.doOnReceive(DAGScheduler.scala:1640)\n\tat org.apache.spark.scheduler.DAGSchedulerEventProcessLoop.onReceive(DAGScheduler.scala:1599)\n\tat org.apache.spark.scheduler.DAGSchedulerEventProcessLoop.onReceive(DAGScheduler.scala:1588)\n\tat org.apache.spark.util.EventLoop$$anon$1.run(EventLoop.scala:48)\n\tat org.apache.spark.scheduler.DAGScheduler.runJob(DAGScheduler.scala:620)\n\tat org.apache.spark.SparkContext.runJob(SparkContext.scala:1832)\n\tat org.apache.spark.SparkContext.runJob(SparkContext.scala:1845)\n\tat org.apache.spark.SparkContext.runJob(SparkContext.scala:1858)\n\tat org.apache.spark.sql.execution.SparkPlan.executeTake(SparkPlan.scala:212)\n\tat org.apache.spark.sql.execution.Limit.executeCollect(basicOperators.scala:165)\n\tat org.apache.spark.sql.execution.SparkPlan.executeCollectPublic(SparkPlan.scala:174)\n\tat org.apache.spark.sql.DataFrame$$anonfun$org$apache$spark$sql$DataFrame$$execute$1$1.apply(DataFrame.scala:1538)\n\tat org.apache.spark.sql.DataFrame$$anonfun$org$apache$spark$sql$DataFrame$$execute$1$1.apply(DataFrame.scala:1538)\n\tat org.apache.spark.sql.execution.SQLExecution$.withNewExecutionId(SQLExecution.scala:56)\n\tat org.apache.spark.sql.DataFrame.withNewExecutionId(DataFrame.scala:2125)\n\tat org.apache.spark.sql.DataFrame.org$apache$spark$sql$DataFrame$$execute$1(DataFrame.scala:1537)\n\tat org.apache.spark.sql.DataFrame.org$apache$spark$sql$DataFrame$$collect(DataFrame.scala:1544)\n\tat org.apache.spark.sql.DataFrame$$anonfun$head$1.apply(DataFrame.scala:1414)\n\tat org.apache.spark.sql.DataFrame$$anonfun$head$1.apply(DataFrame.scala:1413)\n\tat org.apache.spark.sql.DataFrame.withCallback(DataFrame.scala:2138)\n\tat org.apache.spark.sql.DataFrame.head(DataFrame.scala:1413)\n\tat org.apache.spark.sql.DataFrame.take(DataFrame.scala:1495)\n\tat org.apache.spark.sql.DataFrame.showString(DataFrame.scala:171)\n\tat org.apache.spark.sql.DataFrame.show(DataFrame.scala:394)\n\tat org.apache.spark.sql.DataFrame.show(DataFrame.scala:355)\n\tat org.apache.spark.sql.DataFrame.show(DataFrame.scala:363)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.<init>(<console>:88)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.<init>(<console>:95)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.<init>(<console>:97)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.<init>(<console>:99)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.<init>(<console>:101)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.<init>(<console>:103)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.<init>(<console>:105)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.<init>(<console>:107)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.<init>(<console>:109)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.<init>(<console>:111)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.<init>(<console>:113)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.<init>(<console>:115)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.<init>(<console>:117)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.<init>(<console>:119)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.<init>(<console>:121)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.<init>(<console>:123)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.<init>(<console>:125)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.<init>(<console>:127)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.<init>(<console>:129)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.<init>(<console>:131)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.<init>(<console>:133)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.<init>(<console>:135)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC.<init>(<console>:137)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC.<init>(<console>:139)\n\tat $iwC$$iwC$$iwC$$iwC.<init>(<console>:141)\n\tat $iwC$$iwC$$iwC.<init>(<console>:143)\n\tat $iwC$$iwC.<init>(<console>:145)\n\tat $iwC.<init>(<console>:147)\n\tat <init>(<console>:149)\n\tat .<init>(<console>:153)\n\tat .<clinit>(<console>)\n\tat .<init>(<console>:7)\n\tat .<clinit>(<console>)\n\tat $print(<console>)\n\tat sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n\tat sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)\n\tat sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n\tat java.lang.reflect.Method.invoke(Method.java:498)\n\tat org.apache.spark.repl.SparkIMain$ReadEvalPrint.call(SparkIMain.scala:1065)\n\tat org.apache.spark.repl.SparkIMain$Request.loadAndRun(SparkIMain.scala:1346)\n\tat org.apache.spark.repl.SparkIMain.loadAndRunReq$1(SparkIMain.scala:840)\n\tat org.apache.spark.repl.SparkIMain.interpret(SparkIMain.scala:871)\n\tat org.apache.spark.repl.SparkIMain.interpret(SparkIMain.scala:819)\n\tat notebook.kernel.Repl$$anonfun$6.apply(Repl.scala:202)\n\tat notebook.kernel.Repl$$anonfun$6.apply(Repl.scala:202)\n\tat scala.util.DynamicVariable.withValue(DynamicVariable.scala:57)\n\tat scala.Console$.withOut(Console.scala:126)\n\tat notebook.kernel.Repl.evaluate(Repl.scala:201)\n\tat notebook.client.ReplCalculator$$anonfun$10$$anon$1$$anonfun$27.replEvaluate$1(ReplCalculator.scala:402)\n\tat notebook.client.ReplCalculator$$anonfun$10$$anon$1$$anonfun$27.apply(ReplCalculator.scala:415)\n\tat notebook.client.ReplCalculator$$anonfun$10$$anon$1$$anonfun$27.apply(ReplCalculator.scala:396)\n\tat scala.concurrent.impl.Future$PromiseCompletingRunnable.liftedTree1$1(Future.scala:24)\n\tat scala.concurrent.impl.Future$PromiseCompletingRunnable.run(Future.scala:24)\n\tat akka.dispatch.TaskInvocation.run(AbstractDispatcher.scala:40)\n\tat akka.dispatch.ForkJoinExecutorConfigurator$AkkaForkJoinTask.exec(AbstractDispatcher.scala:397)\n\tat scala.concurrent.forkjoin.ForkJoinTask.doExec(ForkJoinTask.java:260)\n\tat scala.concurrent.forkjoin.ForkJoinPool$WorkQueue.runTask(ForkJoinPool.java:1339)\n\tat scala.concurrent.forkjoin.ForkJoinPool.runWorker(ForkJoinPool.java:1979)\n\tat scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:107)\nCaused by: java.lang.ClassCastException: org.apache.spark.sql.catalyst.expressions.GenericRow cannot be cast to $iwC$$iwC$Dummy\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$anonfun$1.apply(<console>:84)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$anonfun$1.apply(<console>:84)\n\tat scala.collection.Iterator$$anon$11.next(Iterator.scala:328)\n\tat scala.collection.Iterator$$anon$11.next(Iterator.scala:328)\n\tat scala.collection.Iterator$$anon$11.next(Iterator.scala:328)\n\tat scala.collection.Iterator$$anon$10.next(Iterator.scala:312)\n\tat scala.collection.Iterator$class.foreach(Iterator.scala:727)\n\tat scala.collection.AbstractIterator.foreach(Iterator.scala:1157)\n\tat scala.collection.generic.Growable$class.$plus$plus$eq(Growable.scala:48)\n\tat scala.collection.mutable.ArrayBuffer.$plus$plus$eq(ArrayBuffer.scala:103)\n\tat scala.collection.mutable.ArrayBuffer.$plus$plus$eq(ArrayBuffer.scala:47)\n\tat scala.collection.TraversableOnce$class.to(TraversableOnce.scala:273)\n\tat scala.collection.AbstractIterator.to(Iterator.scala:1157)\n\tat scala.collection.TraversableOnce$class.toBuffer(TraversableOnce.scala:265)\n\tat scala.collection.AbstractIterator.toBuffer(Iterator.scala:1157)\n\tat scala.collection.TraversableOnce$class.toArray(TraversableOnce.scala:252)\n\tat scala.collection.AbstractIterator.toArray(Iterator.scala:1157)\n\tat org.apache.spark.sql.execution.SparkPlan$$anonfun$5.apply(SparkPlan.scala:212)\n\tat org.apache.spark.sql.execution.SparkPlan$$anonfun$5.apply(SparkPlan.scala:212)\n\tat org.apache.spark.SparkContext$$anonfun$runJob$5.apply(SparkContext.scala:1858)\n\tat org.apache.spark.SparkContext$$anonfun$runJob$5.apply(SparkContext.scala:1858)\n\tat org.apache.spark.scheduler.ResultTask.runTask(ResultTask.scala:66)\n\tat org.apache.spark.scheduler.Task.run(Task.scala:89)\n\tat org.apache.spark.executor.Executor$TaskRunner.run(Executor.scala:213)\n\tat java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)\n\tat java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)\n\tat java.lang.Thread.run(Thread.java:748)\n\n"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : true,
+      "id" : "2F42669F1C8F4BB28E9E6BEA6AF7AD9E"
+    },
+    "cell_type" : "code",
+    "source" : "",
+    "outputs" : [ ]
+  } ],
+  "nbformat" : 4
+}

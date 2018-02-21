@@ -1,0 +1,896 @@
+{
+  "metadata" : {
+    "name" : "1_BasicDataFrameOperations",
+    "user_save_timestamp" : "1970-01-01T05:30:00.000Z",
+    "auto_save_timestamp" : "1970-01-01T05:30:00.000Z",
+    "language_info" : {
+      "name" : "scala",
+      "file_extension" : "scala",
+      "codemirror_mode" : "text/x-scala"
+    },
+    "trusted" : true,
+    "customLocalRepo" : null,
+    "customRepos" : null,
+    "customDeps" : null,
+    "customImports" : null,
+    "customArgs" : null,
+    "customSparkConf" : null
+  },
+  "cells" : [ {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "0B1D35EF73F84BDE8E15385ED766271A"
+    },
+    "cell_type" : "code",
+    "source" : "sc.version",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "res2: String = 1.6.0\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : "1.6.0"
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 1,
+      "time" : "Took: 1 second 383 milliseconds, at 2018-2-20 12:14"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "F65D54DD8EB440B6BB591394FFA2A5D2"
+    },
+    "cell_type" : "code",
+    "source" : "sc",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "res4: org.apache.spark.SparkContext = org.apache.spark.SparkContext@221d042b\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : "org.apache.spark.SparkContext@221d042b"
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 2,
+      "time" : "Took: 831 milliseconds, at 2018-2-20 12:15"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "34E7355749D14800A5B36F40686F0AD7"
+    },
+    "cell_type" : "code",
+    "source" : "import org.apache.spark.sql.SQLContext",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "import org.apache.spark.sql.SQLContext\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 4,
+      "time" : "Took: 619 milliseconds, at 2018-2-20 12:16"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "E1E23EC5D14A4F5E88A6B6A98ACEA7A9"
+    },
+    "cell_type" : "code",
+    "source" : "val sqlContext = new SQLContext(sc)",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "sqlContext: org.apache.spark.sql.SQLContext = org.apache.spark.sql.SQLContext@1e48eba4\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 5,
+      "time" : "Took: 1 second 145 milliseconds, at 2018-2-20 12:16"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "F9DD21231D304F0A8AFD8DE0EC367AC3"
+    },
+    "cell_type" : "code",
+    "source" : "import sqlContext.implicits._",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "import sqlContext.implicits._\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 6,
+      "time" : "Took: 1 second 231 milliseconds, at 2018-2-20 12:17"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "BFB6ABFEFBB3418DA32C9655304084DB"
+    },
+    "cell_type" : "code",
+    "source" : "case class Cust(id: Integer, name: String, sales: Double, discount: Double, state: String) ",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "defined class Cust\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 7,
+      "time" : "Took: 635 milliseconds, at 2018-2-20 12:18"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "EA17BEC0FD7A4BA3A062F1AE71E74721"
+    },
+    "cell_type" : "code",
+    "source" : "val custs = Seq(\n  Cust(1, \"Mallik\", 120000.00, 2000.00, \"SY\"),\n  Cust(2, \"Sandy\", 2299381.00, 3837.00, \"IL\"),\n  Cust(3, \"Soma\", 29191.00, 120.00, \"VT\"),\n  Cust(4, \"Pebbi\", 58372.00, 58.00, \"SG\"),\n  Cust(5, \"Avi\", 838201.00, 3929, \"GE\")\n)",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "custs: Seq[Cust] = List(Cust(1,Mallik,120000.0,2000.0,SY), Cust(2,Sandy,2299381.0,3837.0,IL), Cust(3,Soma,29191.0,120.0,VT), Cust(4,Pebbi,58372.0,58.0,SG), Cust(5,Avi,838201.0,3929.0,GE))\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 9,
+      "time" : "Took: 654 milliseconds, at 2018-2-20 12:22"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "CFADD106841846208B4ECCFF918A8731"
+    },
+    "cell_type" : "code",
+    "source" : "val CustomerDF = custs.toDF // val customerDF = sc.parallelize(custs, 4).toDF()",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "CustomerDF: org.apache.spark.sql.DataFrame = [id: int, name: string, sales: double, discount: double, state: string]\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 17,
+      "time" : "Took: 802 milliseconds, at 2018-2-20 12:26"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "B385B55A21F0413F906788D858CB4F5E"
+    },
+    "cell_type" : "code",
+    "source" : "CustomerDF.toString()",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "res28: String = [id: int, name: string, sales: double, discount: double, state: string]\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : "[id: int, name: string, sales: double, discount: double, state: string]"
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 18,
+      "time" : "Took: 695 milliseconds, at 2018-2-20 12:27"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "presentation" : {
+        "tabs_state" : "{\n  \"tab_id\": \"#tab279913835-0\"\n}",
+        "pivot_chart_state" : "{\n  \"hiddenAttributes\": [],\n  \"menuLimit\": 200,\n  \"cols\": [],\n  \"rows\": [],\n  \"vals\": [],\n  \"exclusions\": {},\n  \"inclusions\": {},\n  \"unusedAttrsVertical\": 85,\n  \"autoSortUnusedAttrs\": false,\n  \"inclusionsInfo\": {},\n  \"aggregatorName\": \"Count\",\n  \"rendererName\": \"Table\"\n}"
+      },
+      "id" : "88271AA1025D45BBA3BE518805EC0701"
+    },
+    "cell_type" : "code",
+    "source" : "CustomerDF.printSchema",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "root\n |-- id: integer (nullable = true)\n |-- name: string (nullable = true)\n |-- sales: double (nullable = false)\n |-- discount: double (nullable = false)\n |-- state: string (nullable = true)\n\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 19,
+      "time" : "Took: 695 milliseconds, at 2018-2-20 12:27"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "presentation" : {
+        "tabs_state" : "{\n  \"tab_id\": \"#tab37286443-0\"\n}",
+        "pivot_chart_state" : "{\n  \"hiddenAttributes\": [],\n  \"menuLimit\": 200,\n  \"cols\": [],\n  \"rows\": [],\n  \"vals\": [],\n  \"exclusions\": {},\n  \"inclusions\": {},\n  \"unusedAttrsVertical\": 85,\n  \"autoSortUnusedAttrs\": false,\n  \"inclusionsInfo\": {},\n  \"aggregatorName\": \"Count\",\n  \"rendererName\": \"Table\"\n}"
+      },
+      "id" : "B215D82434144A6B822D7EE41C862414"
+    },
+    "cell_type" : "code",
+    "source" : "CustomerDF.schema",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "res32: org.apache.spark.sql.types.StructType = StructType(StructField(id,IntegerType,true), StructField(name,StringType,true), StructField(sales,DoubleType,false), StructField(discount,DoubleType,false), StructField(state,StringType,true))\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : "<div>\n      <script data-this=\"{&quot;dataId&quot;:&quot;anon8571a44538562b47e6add8b0c816c4b5&quot;,&quot;dataInit&quot;:[],&quot;genId&quot;:&quot;37286443&quot;}\" type=\"text/x-scoped-javascript\">/*<![CDATA[*/req(['../javascripts/notebook/playground','../javascripts/notebook/magic/tabs'], \n      function(playground, _magictabs) {\n        // data ==> data-this (in observable.js's scopedEval) ==> this in JS => { dataId, dataInit, ... }\n        // this ==> scope (in observable.js's scopedEval) ==> this.parentElement ==> div.container below (toHtml)\n\n        playground.call(data,\n                        this\n                        ,\n                        {\n    \"f\": _magictabs,\n    \"o\": {}\n  }\n  \n                        \n                        \n                      );\n      }\n    );/*]]>*/</script>\n    <div>\n      <div>\n        <ul class=\"nav nav-tabs\" id=\"ul37286443\"><li>\n              <a href=\"#tab37286443-0\"><i class=\"fa fa-table\"/></a>\n            </li><li>\n              <a href=\"#tab37286443-1\"><i class=\"fa fa-cubes\"/></a>\n            </li></ul>\n\n        <div class=\"tab-content\" id=\"tab37286443\"><div class=\"tab-pane\" id=\"tab37286443-0\">\n            <div>\n      <script data-this=\"{&quot;dataId&quot;:&quot;anon5a94a60123a5cb609f69850ee803aa87&quot;,&quot;dataInit&quot;:[{&quot;name&quot;:&quot;id&quot;,&quot;dataType&quot;:&quot;IntegerType&quot;,&quot;nullable&quot;:true,&quot;metadata&quot;:&quot;{}&quot;},{&quot;name&quot;:&quot;name&quot;,&quot;dataType&quot;:&quot;StringType&quot;,&quot;nullable&quot;:true,&quot;metadata&quot;:&quot;{}&quot;},{&quot;name&quot;:&quot;sales&quot;,&quot;dataType&quot;:&quot;DoubleType&quot;,&quot;nullable&quot;:false,&quot;metadata&quot;:&quot;{}&quot;},{&quot;name&quot;:&quot;discount&quot;,&quot;dataType&quot;:&quot;DoubleType&quot;,&quot;nullable&quot;:false,&quot;metadata&quot;:&quot;{}&quot;},{&quot;name&quot;:&quot;state&quot;,&quot;dataType&quot;:&quot;StringType&quot;,&quot;nullable&quot;:true,&quot;metadata&quot;:&quot;{}&quot;}],&quot;genId&quot;:&quot;1867755983&quot;}\" type=\"text/x-scoped-javascript\">/*<![CDATA[*/req(['../javascripts/notebook/playground','../javascripts/notebook/magic/tableChart'], \n      function(playground, _magictableChart) {\n        // data ==> data-this (in observable.js's scopedEval) ==> this in JS => { dataId, dataInit, ... }\n        // this ==> scope (in observable.js's scopedEval) ==> this.parentElement ==> div.container below (toHtml)\n\n        playground.call(data,\n                        this\n                        ,\n                        {\n    \"f\": _magictableChart,\n    \"o\": {\"headers\":[\"name\",\"dataType\",\"nullable\",\"metadata\"],\"width\":600,\"height\":400}\n  }\n  \n                        \n                        \n                      );\n      }\n    );/*]]>*/</script>\n    <div>\n      <span class=\"chart-total-item-count\"><p data-bind=\"text: value\"><script data-this=\"{&quot;valueId&quot;:&quot;anoncb122404d84816e59c737345b6e56f45&quot;,&quot;initialValue&quot;:&quot;5&quot;}\" type=\"text/x-scoped-javascript\">/*<![CDATA[*/\nreq(\n['observable', 'knockout'],\nfunction (O, ko) {\n  ko.applyBindings({\n      value: O.makeObservable(valueId, initialValue)\n    },\n    this\n  );\n});\n        /*]]>*/</script></p> entries total</span>\n      <span class=\"chart-sampling-warning\"><p data-bind=\"text: value\"><script data-this=\"{&quot;valueId&quot;:&quot;anon01889fa58e65113971d00dd70c73c8bd&quot;,&quot;initialValue&quot;:&quot;&quot;}\" type=\"text/x-scoped-javascript\">/*<![CDATA[*/\nreq(\n['observable', 'knockout'],\nfunction (O, ko) {\n  ko.applyBindings({\n      value: O.makeObservable(valueId, initialValue)\n    },\n    this\n  );\n});\n        /*]]>*/</script></p></span>\n      <div>\n      </div>\n    </div></div>\n            </div><div class=\"tab-pane\" id=\"tab37286443-1\">\n            <div>\n      <script data-this=\"{&quot;dataId&quot;:&quot;anondf402900ff68aeda7fd9e30b2fbe2361&quot;,&quot;dataInit&quot;:[{&quot;name&quot;:&quot;id&quot;,&quot;dataType&quot;:&quot;IntegerType&quot;,&quot;nullable&quot;:true,&quot;metadata&quot;:&quot;{}&quot;},{&quot;name&quot;:&quot;name&quot;,&quot;dataType&quot;:&quot;StringType&quot;,&quot;nullable&quot;:true,&quot;metadata&quot;:&quot;{}&quot;},{&quot;name&quot;:&quot;sales&quot;,&quot;dataType&quot;:&quot;DoubleType&quot;,&quot;nullable&quot;:false,&quot;metadata&quot;:&quot;{}&quot;},{&quot;name&quot;:&quot;discount&quot;,&quot;dataType&quot;:&quot;DoubleType&quot;,&quot;nullable&quot;:false,&quot;metadata&quot;:&quot;{}&quot;},{&quot;name&quot;:&quot;state&quot;,&quot;dataType&quot;:&quot;StringType&quot;,&quot;nullable&quot;:true,&quot;metadata&quot;:&quot;{}&quot;}],&quot;genId&quot;:&quot;1307908695&quot;}\" type=\"text/x-scoped-javascript\">/*<![CDATA[*/req(['../javascripts/notebook/playground','../javascripts/notebook/magic/pivotChart'], \n      function(playground, _magicpivotChart) {\n        // data ==> data-this (in observable.js's scopedEval) ==> this in JS => { dataId, dataInit, ... }\n        // this ==> scope (in observable.js's scopedEval) ==> this.parentElement ==> div.container below (toHtml)\n\n        playground.call(data,\n                        this\n                        ,\n                        {\n    \"f\": _magicpivotChart,\n    \"o\": {\"width\":600,\"height\":400,\"derivedAttributes\":{},\"extraOptions\":{}}\n  }\n  \n                        \n                        \n                      );\n      }\n    );/*]]>*/</script>\n    <div>\n      <span class=\"chart-total-item-count\"><p data-bind=\"text: value\"><script data-this=\"{&quot;valueId&quot;:&quot;anonb926d2bb0dc3999560c2b841628aa110&quot;,&quot;initialValue&quot;:&quot;5&quot;}\" type=\"text/x-scoped-javascript\">/*<![CDATA[*/\nreq(\n['observable', 'knockout'],\nfunction (O, ko) {\n  ko.applyBindings({\n      value: O.makeObservable(valueId, initialValue)\n    },\n    this\n  );\n});\n        /*]]>*/</script></p> entries total</span>\n      <span class=\"chart-sampling-warning\"><p data-bind=\"text: value\"><script data-this=\"{&quot;valueId&quot;:&quot;anonc0ffbbc16bc9dfdcde985742f4b3538c&quot;,&quot;initialValue&quot;:&quot;&quot;}\" type=\"text/x-scoped-javascript\">/*<![CDATA[*/\nreq(\n['observable', 'knockout'],\nfunction (O, ko) {\n  ko.applyBindings({\n      value: O.makeObservable(valueId, initialValue)\n    },\n    this\n  );\n});\n        /*]]>*/</script></p></span>\n      <div>\n      </div>\n    </div></div>\n            </div></div>\n      </div>\n    </div></div>"
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 20,
+      "time" : "Took: 783 milliseconds, at 2018-2-20 12:27"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "presentation" : {
+        "tabs_state" : "{\n  \"tab_id\": \"#tab462130249-0\"\n}",
+        "pivot_chart_state" : "{\n  \"hiddenAttributes\": [],\n  \"menuLimit\": 200,\n  \"cols\": [],\n  \"rows\": [],\n  \"vals\": [],\n  \"exclusions\": {},\n  \"inclusions\": {},\n  \"unusedAttrsVertical\": 85,\n  \"autoSortUnusedAttrs\": false,\n  \"inclusionsInfo\": {},\n  \"aggregatorName\": \"Count\",\n  \"rendererName\": \"Table\"\n}"
+      },
+      "id" : "CD18DC6C76F54C05B06B0BFB0615FF7D"
+    },
+    "cell_type" : "code",
+    "source" : "CustomerDF.columns",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "res34: Array[String] = Array(id, name, sales, discount, state)\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : "<div>\n      <script data-this=\"{&quot;dataId&quot;:&quot;anoncc9051247a3109da398ed0798e4e842a&quot;,&quot;dataInit&quot;:[],&quot;genId&quot;:&quot;462130249&quot;}\" type=\"text/x-scoped-javascript\">/*<![CDATA[*/req(['../javascripts/notebook/playground','../javascripts/notebook/magic/tabs'], \n      function(playground, _magictabs) {\n        // data ==> data-this (in observable.js's scopedEval) ==> this in JS => { dataId, dataInit, ... }\n        // this ==> scope (in observable.js's scopedEval) ==> this.parentElement ==> div.container below (toHtml)\n\n        playground.call(data,\n                        this\n                        ,\n                        {\n    \"f\": _magictabs,\n    \"o\": {}\n  }\n  \n                        \n                        \n                      );\n      }\n    );/*]]>*/</script>\n    <div>\n      <div>\n        <ul class=\"nav nav-tabs\" id=\"ul462130249\"><li>\n              <a href=\"#tab462130249-0\"><i class=\"fa fa-table\"/></a>\n            </li><li>\n              <a href=\"#tab462130249-1\"><i class=\"fa fa-cubes\"/></a>\n            </li></ul>\n\n        <div class=\"tab-content\" id=\"tab462130249\"><div class=\"tab-pane\" id=\"tab462130249-0\">\n            <div>\n      <script data-this=\"{&quot;dataId&quot;:&quot;anonc6c4ca971b5eb1d395a68a5f4eec5cc3&quot;,&quot;dataInit&quot;:[{&quot;string value&quot;:&quot;id&quot;},{&quot;string value&quot;:&quot;name&quot;},{&quot;string value&quot;:&quot;sales&quot;},{&quot;string value&quot;:&quot;discount&quot;},{&quot;string value&quot;:&quot;state&quot;}],&quot;genId&quot;:&quot;1493693419&quot;}\" type=\"text/x-scoped-javascript\">/*<![CDATA[*/req(['../javascripts/notebook/playground','../javascripts/notebook/magic/tableChart'], \n      function(playground, _magictableChart) {\n        // data ==> data-this (in observable.js's scopedEval) ==> this in JS => { dataId, dataInit, ... }\n        // this ==> scope (in observable.js's scopedEval) ==> this.parentElement ==> div.container below (toHtml)\n\n        playground.call(data,\n                        this\n                        ,\n                        {\n    \"f\": _magictableChart,\n    \"o\": {\"headers\":[\"string value\"],\"width\":600,\"height\":400}\n  }\n  \n                        \n                        \n                      );\n      }\n    );/*]]>*/</script>\n    <div>\n      <span class=\"chart-total-item-count\"><p data-bind=\"text: value\"><script data-this=\"{&quot;valueId&quot;:&quot;anon3c27fc2aa6feae279c5a68e1b0bec946&quot;,&quot;initialValue&quot;:&quot;5&quot;}\" type=\"text/x-scoped-javascript\">/*<![CDATA[*/\nreq(\n['observable', 'knockout'],\nfunction (O, ko) {\n  ko.applyBindings({\n      value: O.makeObservable(valueId, initialValue)\n    },\n    this\n  );\n});\n        /*]]>*/</script></p> entries total</span>\n      <span class=\"chart-sampling-warning\"><p data-bind=\"text: value\"><script data-this=\"{&quot;valueId&quot;:&quot;anon0779e1297eeda917339538d35671bc34&quot;,&quot;initialValue&quot;:&quot;&quot;}\" type=\"text/x-scoped-javascript\">/*<![CDATA[*/\nreq(\n['observable', 'knockout'],\nfunction (O, ko) {\n  ko.applyBindings({\n      value: O.makeObservable(valueId, initialValue)\n    },\n    this\n  );\n});\n        /*]]>*/</script></p></span>\n      <div>\n      </div>\n    </div></div>\n            </div><div class=\"tab-pane\" id=\"tab462130249-1\">\n            <div>\n      <script data-this=\"{&quot;dataId&quot;:&quot;anon8e4ff3a24e09c98e49fcffd68660fff3&quot;,&quot;dataInit&quot;:[{&quot;string value&quot;:&quot;id&quot;},{&quot;string value&quot;:&quot;name&quot;},{&quot;string value&quot;:&quot;sales&quot;},{&quot;string value&quot;:&quot;discount&quot;},{&quot;string value&quot;:&quot;state&quot;}],&quot;genId&quot;:&quot;1696517649&quot;}\" type=\"text/x-scoped-javascript\">/*<![CDATA[*/req(['../javascripts/notebook/playground','../javascripts/notebook/magic/pivotChart'], \n      function(playground, _magicpivotChart) {\n        // data ==> data-this (in observable.js's scopedEval) ==> this in JS => { dataId, dataInit, ... }\n        // this ==> scope (in observable.js's scopedEval) ==> this.parentElement ==> div.container below (toHtml)\n\n        playground.call(data,\n                        this\n                        ,\n                        {\n    \"f\": _magicpivotChart,\n    \"o\": {\"width\":600,\"height\":400,\"derivedAttributes\":{},\"extraOptions\":{}}\n  }\n  \n                        \n                        \n                      );\n      }\n    );/*]]>*/</script>\n    <div>\n      <span class=\"chart-total-item-count\"><p data-bind=\"text: value\"><script data-this=\"{&quot;valueId&quot;:&quot;anon80c536f3459616e523df0303af28df62&quot;,&quot;initialValue&quot;:&quot;5&quot;}\" type=\"text/x-scoped-javascript\">/*<![CDATA[*/\nreq(\n['observable', 'knockout'],\nfunction (O, ko) {\n  ko.applyBindings({\n      value: O.makeObservable(valueId, initialValue)\n    },\n    this\n  );\n});\n        /*]]>*/</script></p> entries total</span>\n      <span class=\"chart-sampling-warning\"><p data-bind=\"text: value\"><script data-this=\"{&quot;valueId&quot;:&quot;anon75550040e58c0d1fea94c9cc31b68d61&quot;,&quot;initialValue&quot;:&quot;&quot;}\" type=\"text/x-scoped-javascript\">/*<![CDATA[*/\nreq(\n['observable', 'knockout'],\nfunction (O, ko) {\n  ko.applyBindings({\n      value: O.makeObservable(valueId, initialValue)\n    },\n    this\n  );\n});\n        /*]]>*/</script></p></span>\n      <div>\n      </div>\n    </div></div>\n            </div></div>\n      </div>\n    </div></div>"
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 21,
+      "time" : "Took: 700 milliseconds, at 2018-2-20 12:27"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "presentation" : {
+        "tabs_state" : "{\n  \"tab_id\": \"#tab2089985438-0\"\n}",
+        "pivot_chart_state" : "{\n  \"hiddenAttributes\": [],\n  \"menuLimit\": 200,\n  \"cols\": [],\n  \"rows\": [],\n  \"vals\": [],\n  \"exclusions\": {},\n  \"inclusions\": {},\n  \"unusedAttrsVertical\": 85,\n  \"autoSortUnusedAttrs\": false,\n  \"inclusionsInfo\": {},\n  \"aggregatorName\": \"Count\",\n  \"rendererName\": \"Table\"\n}"
+      },
+      "id" : "CD8179A0FCAB41DDB55B2ABC644B797F"
+    },
+    "cell_type" : "code",
+    "source" : "CustomerDF.dtypes",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "res36: Array[(String, String)] = Array((id,IntegerType), (name,StringType), (sales,DoubleType), (discount,DoubleType), (state,StringType))\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : "<div>\n      <script data-this=\"{&quot;dataId&quot;:&quot;anon01c55878543652a59e01d7b2cf096fe4&quot;,&quot;dataInit&quot;:[],&quot;genId&quot;:&quot;2089985438&quot;}\" type=\"text/x-scoped-javascript\">/*<![CDATA[*/req(['../javascripts/notebook/playground','../javascripts/notebook/magic/tabs'], \n      function(playground, _magictabs) {\n        // data ==> data-this (in observable.js's scopedEval) ==> this in JS => { dataId, dataInit, ... }\n        // this ==> scope (in observable.js's scopedEval) ==> this.parentElement ==> div.container below (toHtml)\n\n        playground.call(data,\n                        this\n                        ,\n                        {\n    \"f\": _magictabs,\n    \"o\": {}\n  }\n  \n                        \n                        \n                      );\n      }\n    );/*]]>*/</script>\n    <div>\n      <div>\n        <ul class=\"nav nav-tabs\" id=\"ul2089985438\"><li>\n              <a href=\"#tab2089985438-0\"><i class=\"fa fa-table\"/></a>\n            </li><li>\n              <a href=\"#tab2089985438-1\"><i class=\"fa fa-pie-chart\"/></a>\n            </li><li>\n              <a href=\"#tab2089985438-2\"><i class=\"fa fa-cubes\"/></a>\n            </li></ul>\n\n        <div class=\"tab-content\" id=\"tab2089985438\"><div class=\"tab-pane\" id=\"tab2089985438-0\">\n            <div>\n      <script data-this=\"{&quot;dataId&quot;:&quot;anon35a2679024b26d4fc7a9cbd3396fd234&quot;,&quot;dataInit&quot;:[{&quot;_1&quot;:&quot;id&quot;,&quot;_2&quot;:&quot;IntegerType&quot;},{&quot;_1&quot;:&quot;name&quot;,&quot;_2&quot;:&quot;StringType&quot;},{&quot;_1&quot;:&quot;sales&quot;,&quot;_2&quot;:&quot;DoubleType&quot;},{&quot;_1&quot;:&quot;discount&quot;,&quot;_2&quot;:&quot;DoubleType&quot;},{&quot;_1&quot;:&quot;state&quot;,&quot;_2&quot;:&quot;StringType&quot;}],&quot;genId&quot;:&quot;434324027&quot;}\" type=\"text/x-scoped-javascript\">/*<![CDATA[*/req(['../javascripts/notebook/playground','../javascripts/notebook/magic/tableChart'], \n      function(playground, _magictableChart) {\n        // data ==> data-this (in observable.js's scopedEval) ==> this in JS => { dataId, dataInit, ... }\n        // this ==> scope (in observable.js's scopedEval) ==> this.parentElement ==> div.container below (toHtml)\n\n        playground.call(data,\n                        this\n                        ,\n                        {\n    \"f\": _magictableChart,\n    \"o\": {\"headers\":[\"_1\",\"_2\"],\"width\":600,\"height\":400}\n  }\n  \n                        \n                        \n                      );\n      }\n    );/*]]>*/</script>\n    <div>\n      <span class=\"chart-total-item-count\"><p data-bind=\"text: value\"><script data-this=\"{&quot;valueId&quot;:&quot;anon1cbadc2e1a3686ed203dc1b865481faf&quot;,&quot;initialValue&quot;:&quot;5&quot;}\" type=\"text/x-scoped-javascript\">/*<![CDATA[*/\nreq(\n['observable', 'knockout'],\nfunction (O, ko) {\n  ko.applyBindings({\n      value: O.makeObservable(valueId, initialValue)\n    },\n    this\n  );\n});\n        /*]]>*/</script></p> entries total</span>\n      <span class=\"chart-sampling-warning\"><p data-bind=\"text: value\"><script data-this=\"{&quot;valueId&quot;:&quot;anon31d404d618b2dee0f89ddd75f6413165&quot;,&quot;initialValue&quot;:&quot;&quot;}\" type=\"text/x-scoped-javascript\">/*<![CDATA[*/\nreq(\n['observable', 'knockout'],\nfunction (O, ko) {\n  ko.applyBindings({\n      value: O.makeObservable(valueId, initialValue)\n    },\n    this\n  );\n});\n        /*]]>*/</script></p></span>\n      <div>\n      </div>\n    </div></div>\n            </div><div class=\"tab-pane\" id=\"tab2089985438-1\">\n            <div>\n      <script data-this=\"{&quot;dataId&quot;:&quot;anonde3afc3c10766e90fb1eee8602448122&quot;,&quot;dataInit&quot;:[{&quot;_1&quot;:&quot;id&quot;,&quot;_2&quot;:&quot;IntegerType&quot;},{&quot;_1&quot;:&quot;name&quot;,&quot;_2&quot;:&quot;StringType&quot;},{&quot;_1&quot;:&quot;sales&quot;,&quot;_2&quot;:&quot;DoubleType&quot;},{&quot;_1&quot;:&quot;discount&quot;,&quot;_2&quot;:&quot;DoubleType&quot;},{&quot;_1&quot;:&quot;state&quot;,&quot;_2&quot;:&quot;StringType&quot;}],&quot;genId&quot;:&quot;1341106217&quot;}\" type=\"text/x-scoped-javascript\">/*<![CDATA[*/req(['../javascripts/notebook/playground','../javascripts/notebook/magic/pieChart'], \n      function(playground, _magicpieChart) {\n        // data ==> data-this (in observable.js's scopedEval) ==> this in JS => { dataId, dataInit, ... }\n        // this ==> scope (in observable.js's scopedEval) ==> this.parentElement ==> div.container below (toHtml)\n\n        playground.call(data,\n                        this\n                        ,\n                        {\n    \"f\": _magicpieChart,\n    \"o\": {\"series\":\"_1\",\"p\":\"_2\",\"width\":600,\"height\":400}\n  }\n  \n                        \n                        \n                      );\n      }\n    );/*]]>*/</script>\n    <div>\n      <span class=\"chart-total-item-count\"><p data-bind=\"text: value\"><script data-this=\"{&quot;valueId&quot;:&quot;anon9c228dd51f82e9e8ff600e58ee12266f&quot;,&quot;initialValue&quot;:&quot;5&quot;}\" type=\"text/x-scoped-javascript\">/*<![CDATA[*/\nreq(\n['observable', 'knockout'],\nfunction (O, ko) {\n  ko.applyBindings({\n      value: O.makeObservable(valueId, initialValue)\n    },\n    this\n  );\n});\n        /*]]>*/</script></p> entries total</span>\n      <span class=\"chart-sampling-warning\"><p data-bind=\"text: value\"><script data-this=\"{&quot;valueId&quot;:&quot;anon0e772d79c8dcff82a28eba58f7c4dd4f&quot;,&quot;initialValue&quot;:&quot;&quot;}\" type=\"text/x-scoped-javascript\">/*<![CDATA[*/\nreq(\n['observable', 'knockout'],\nfunction (O, ko) {\n  ko.applyBindings({\n      value: O.makeObservable(valueId, initialValue)\n    },\n    this\n  );\n});\n        /*]]>*/</script></p></span>\n      <div>\n      </div>\n    </div></div>\n            </div><div class=\"tab-pane\" id=\"tab2089985438-2\">\n            <div>\n      <script data-this=\"{&quot;dataId&quot;:&quot;anon6835064e865329232b71ca87b42a0759&quot;,&quot;dataInit&quot;:[{&quot;_1&quot;:&quot;id&quot;,&quot;_2&quot;:&quot;IntegerType&quot;},{&quot;_1&quot;:&quot;name&quot;,&quot;_2&quot;:&quot;StringType&quot;},{&quot;_1&quot;:&quot;sales&quot;,&quot;_2&quot;:&quot;DoubleType&quot;},{&quot;_1&quot;:&quot;discount&quot;,&quot;_2&quot;:&quot;DoubleType&quot;},{&quot;_1&quot;:&quot;state&quot;,&quot;_2&quot;:&quot;StringType&quot;}],&quot;genId&quot;:&quot;512391354&quot;}\" type=\"text/x-scoped-javascript\">/*<![CDATA[*/req(['../javascripts/notebook/playground','../javascripts/notebook/magic/pivotChart'], \n      function(playground, _magicpivotChart) {\n        // data ==> data-this (in observable.js's scopedEval) ==> this in JS => { dataId, dataInit, ... }\n        // this ==> scope (in observable.js's scopedEval) ==> this.parentElement ==> div.container below (toHtml)\n\n        playground.call(data,\n                        this\n                        ,\n                        {\n    \"f\": _magicpivotChart,\n    \"o\": {\"width\":600,\"height\":400,\"derivedAttributes\":{},\"extraOptions\":{}}\n  }\n  \n                        \n                        \n                      );\n      }\n    );/*]]>*/</script>\n    <div>\n      <span class=\"chart-total-item-count\"><p data-bind=\"text: value\"><script data-this=\"{&quot;valueId&quot;:&quot;anon0d1a5b7a520e7f61a2e50f545fd361a4&quot;,&quot;initialValue&quot;:&quot;5&quot;}\" type=\"text/x-scoped-javascript\">/*<![CDATA[*/\nreq(\n['observable', 'knockout'],\nfunction (O, ko) {\n  ko.applyBindings({\n      value: O.makeObservable(valueId, initialValue)\n    },\n    this\n  );\n});\n        /*]]>*/</script></p> entries total</span>\n      <span class=\"chart-sampling-warning\"><p data-bind=\"text: value\"><script data-this=\"{&quot;valueId&quot;:&quot;anona23b0d83f740298ec6c3b10f18cdd04e&quot;,&quot;initialValue&quot;:&quot;&quot;}\" type=\"text/x-scoped-javascript\">/*<![CDATA[*/\nreq(\n['observable', 'knockout'],\nfunction (O, ko) {\n  ko.applyBindings({\n      value: O.makeObservable(valueId, initialValue)\n    },\n    this\n  );\n});\n        /*]]>*/</script></p></span>\n      <div>\n      </div>\n    </div></div>\n            </div></div>\n      </div>\n    </div></div>"
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 22,
+      "time" : "Took: 749 milliseconds, at 2018-2-20 12:27"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "6C3EEE664A874D55871238A964FF5BF7"
+    },
+    "cell_type" : "code",
+    "source" : "CustomerDF.schema.json",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "res38: String = {\"type\":\"struct\",\"fields\":[{\"name\":\"id\",\"type\":\"integer\",\"nullable\":true,\"metadata\":{}},{\"name\":\"name\",\"type\":\"string\",\"nullable\":true,\"metadata\":{}},{\"name\":\"sales\",\"type\":\"double\",\"nullable\":false,\"metadata\":{}},{\"name\":\"discount\",\"type\":\"double\",\"nullable\":false,\"metadata\":{}},{\"name\":\"state\",\"type\":\"string\",\"nullable\":true,\"metadata\":{}}]}\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : "{&quot;type&quot;:&quot;struct&quot;,&quot;fields&quot;:[{&quot;name&quot;:&quot;id&quot;,&quot;type&quot;:&quot;integer&quot;,&quot;nullable&quot;:true,&quot;metadata&quot;:{}},{&quot;name&quot;:&quot;name&quot;,&quot;type&quot;:&quot;string&quot;,&quot;nullable&quot;:true,&quot;metadata&quot;:{}},{&quot;name&quot;:&quot;sales&quot;,&quot;type&quot;:&quot;double&quot;,&quot;nullable&quot;:false,&quot;metadata&quot;:{}},{&quot;name&quot;:&quot;discount&quot;,&quot;type&quot;:&quot;double&quot;,&quot;nullable&quot;:false,&quot;metadata&quot;:{}},{&quot;name&quot;:&quot;state&quot;,&quot;type&quot;:&quot;string&quot;,&quot;nullable&quot;:true,&quot;metadata&quot;:{}}]}"
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 23,
+      "time" : "Took: 686 milliseconds, at 2018-2-20 12:28"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "D8ED37867AB34D23A96EE9617CDC7312"
+    },
+    "cell_type" : "code",
+    "source" : "CustomerDF.schema.prettyJson",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "res40: String = \n{\r\n  \"type\" : \"struct\",\r\n  \"fields\" : [ {\r\n    \"name\" : \"id\",\r\n    \"type\" : \"integer\",\r\n    \"nullable\" : true,\r\n    \"metadata\" : { }\r\n  }, {\r\n    \"name\" : \"name\",\r\n    \"type\" : \"string\",\r\n    \"nullable\" : true,\r\n    \"metadata\" : { }\r\n  }, {\r\n    \"name\" : \"sales\",\r\n    \"type\" : \"double\",\r\n    \"nullable\" : false,\r\n    \"metadata\" : { }\r\n  }, {\r\n    \"name\" : \"discount\",\r\n    \"type\" : \"double\",\r\n    \"nullable\" : false,\r\n    \"metadata\" : { }\r\n  }, {\r\n    \"name\" : \"state\",\r\n    \"type\" : \"string\",\r\n    \"nullable\" : true,\r\n    \"metadata\" : { }\r\n  } ]\r\n}\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : "{\r\n  &quot;type&quot; : &quot;struct&quot;,\r\n  &quot;fields&quot; : [ {\r\n    &quot;name&quot; : &quot;id&quot;,\r\n    &quot;type&quot; : &quot;integer&quot;,\r\n    &quot;nullable&quot; : true,\r\n    &quot;metadata&quot; : { }\r\n  }, {\r\n    &quot;name&quot; : &quot;name&quot;,\r\n    &quot;type&quot; : &quot;string&quot;,\r\n    &quot;nullable&quot; : true,\r\n    &quot;metadata&quot; : { }\r\n  }, {\r\n    &quot;name&quot; : &quot;sales&quot;,\r\n    &quot;type&quot; : &quot;double&quot;,\r\n    &quot;nullable&quot; : false,\r\n    &quot;metadata&quot; : { }\r\n  }, {\r\n    &quot;name&quot; : &quot;discount&quot;,\r\n    &quot;type&quot; : &quot;double&quot;,\r\n    &quot;nullable&quot; : false,\r\n    &quot;metadata&quot; : { }\r\n  }, {\r\n    &quot;name&quot; : &quot;state&quot;,\r\n    &quot;type&quot; : &quot;string&quot;,\r\n    &quot;nullable&quot; : true,\r\n    &quot;metadata&quot; : { }\r\n  } ]\r\n}"
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 24,
+      "time" : "Took: 636 milliseconds, at 2018-2-20 12:28"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "ACBC2620C6A043989E29273E94C8FE25"
+    },
+    "cell_type" : "code",
+    "source" : "CustomerDF.explain",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "== Physical Plan ==\nLocalTableScan [id#5,name#6,sales#7,discount#8,state#9], [[1,Mallik,120000.0,2000.0,SY],[2,Sandy,2299381.0,3837.0,IL],[3,Soma,29191.0,120.0,VT],[4,Pebbi,58372.0,58.0,SG],[5,Avi,838201.0,3929.0,GE]]\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 26,
+      "time" : "Took: 753 milliseconds, at 2018-2-20 12:28"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "BDD028DBA47B48158192F66F9D7EF6E4"
+    },
+    "cell_type" : "code",
+    "source" : "CustomerDF.explain(true)",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "== Parsed Logical Plan ==\nLocalRelation [id#5,name#6,sales#7,discount#8,state#9], [[1,Mallik,120000.0,2000.0,SY],[2,Sandy,2299381.0,3837.0,IL],[3,Soma,29191.0,120.0,VT],[4,Pebbi,58372.0,58.0,SG],[5,Avi,838201.0,3929.0,GE]]\n\n== Analyzed Logical Plan ==\nid: int, name: string, sales: double, discount: double, state: string\nLocalRelation [id#5,name#6,sales#7,discount#8,state#9], [[1,Mallik,120000.0,2000.0,SY],[2,Sandy,2299381.0,3837.0,IL],[3,Soma,29191.0,120.0,VT],[4,Pebbi,58372.0,58.0,SG],[5,Avi,838201.0,3929.0,GE]]\n\n== Optimized Logical Plan ==\nLocalRelation [id#5,name#6,sales#7,discount#8,state#9], [[1,Mallik,120000.0,2000.0,SY],[2,Sandy,2299381.0,3837.0,IL],[3,Soma,29191.0,120.0,VT],[4,Pebbi,58372.0,58.0,SG],[5,Avi,838201.0,3929.0,GE]]\n\n== Physical Plan ==\nLocalTableScan [id#5,name#6,sales#7,discount#8,state#9], [[1,Mallik,120000.0,2000.0,SY],[2,Sandy,2299381.0,3837.0,IL],[3,Soma,29191.0,120.0,VT],[4,Pebbi,58372.0,58.0,SG],[5,Avi,838201.0,3929.0,GE]]\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 27,
+      "time" : "Took: 742 milliseconds, at 2018-2-20 12:29"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "AEBF946A91164D4D9E1F8579223AE528"
+    },
+    "cell_type" : "code",
+    "source" : "CustomerDF.show",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "+---+------+---------+--------+-----+\n| id|  name|    sales|discount|state|\n+---+------+---------+--------+-----+\n|  1|Mallik| 120000.0|  2000.0|   SY|\n|  2| Sandy|2299381.0|  3837.0|   IL|\n|  3|  Soma|  29191.0|   120.0|   VT|\n|  4| Pebbi|  58372.0|    58.0|   SG|\n|  5|   Avi| 838201.0|  3929.0|   GE|\n+---+------+---------+--------+-----+\n\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 28,
+      "time" : "Took: 829 milliseconds, at 2018-2-20 12:29"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "D76635AEDEC94B66B68EADEEB3938BB0"
+    },
+    "cell_type" : "code",
+    "source" : "CustomerDF.show(2)",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "+---+------+---------+--------+-----+\n| id|  name|    sales|discount|state|\n+---+------+---------+--------+-----+\n|  1|Mallik| 120000.0|  2000.0|   SY|\n|  2| Sandy|2299381.0|  3837.0|   IL|\n+---+------+---------+--------+-----+\nonly showing top 2 rows\n\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 29,
+      "time" : "Took: 696 milliseconds, at 2018-2-20 12:29"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "1A9CC1A3374049078FC5546EE36A78A8"
+    },
+    "cell_type" : "code",
+    "source" : "CustomerDF.select(\"name\").show",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "+------+\n|  name|\n+------+\n|Mallik|\n| Sandy|\n|  Soma|\n| Pebbi|\n|   Avi|\n+------+\n\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 31,
+      "time" : "Took: 631 milliseconds, at 2018-2-20 12:30"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "73882DC106BC473AB31BD3F713FEFB37"
+    },
+    "cell_type" : "code",
+    "source" : "CustomerDF.select(\"name\", \"state\").show",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "+------+-----+\n|  name|state|\n+------+-----+\n|Mallik|   SY|\n| Sandy|   IL|\n|  Soma|   VT|\n| Pebbi|   SG|\n|   Avi|   GE|\n+------+-----+\n\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 32,
+      "time" : "Took: 652 milliseconds, at 2018-2-20 12:30"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "2FC4D1C3004E4E508A964A4E33BEFC97"
+    },
+    "cell_type" : "code",
+    "source" : "CustomerDF.select(\"*\").show",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "+---+------+---------+--------+-----+\n| id|  name|    sales|discount|state|\n+---+------+---------+--------+-----+\n|  1|Mallik| 120000.0|  2000.0|   SY|\n|  2| Sandy|2299381.0|  3837.0|   IL|\n|  3|  Soma|  29191.0|   120.0|   VT|\n|  4| Pebbi|  58372.0|    58.0|   SG|\n|  5|   Avi| 838201.0|  3929.0|   GE|\n+---+------+---------+--------+-----+\n\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 33,
+      "time" : "Took: 703 milliseconds, at 2018-2-20 12:30"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "94FD0E01067F40658E6D3AC736F009BB"
+    },
+    "cell_type" : "code",
+    "source" : "CustomerDF.select($\"id\",$\"name\").show",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "+---+------+\n| id|  name|\n+---+------+\n|  1|Mallik|\n|  2| Sandy|\n|  3|  Soma|\n|  4| Pebbi|\n|  5|   Avi|\n+---+------+\n\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 36,
+      "time" : "Took: 655 milliseconds, at 2018-2-20 12:31"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "4FDB6348D19B42AE875E12C717DCDA45"
+    },
+    "cell_type" : "code",
+    "source" : "CustomerDF.filter($\"state\".equalTo(\"SY\")).show",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "+---+------+--------+--------+-----+\n| id|  name|   sales|discount|state|\n+---+------+--------+--------+-----+\n|  1|Mallik|120000.0|  2000.0|   SY|\n+---+------+--------+--------+-----+\n\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 39,
+      "time" : "Took: 845 milliseconds, at 2018-2-20 12:32"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "0574BC3ADDDA4B2B822054DB2AE0934E"
+    },
+    "cell_type" : "code",
+    "source" : "CustomerDF.select($\"state\".equalTo(\"SY\")).show",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "+------------+\n|(state = SY)|\n+------------+\n|        true|\n|       false|\n|       false|\n|       false|\n|       false|\n+------------+\n\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 40,
+      "time" : "Took: 692 milliseconds, at 2018-2-20 12:32"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "A67C59077CE840898B5B0E98A12EBD27"
+    },
+    "cell_type" : "code",
+    "source" : "CustomerDF.where($\"state\".equalTo(\"SY\")).show",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "+---+------+--------+--------+-----+\n| id|  name|   sales|discount|state|\n+---+------+--------+--------+-----+\n|  1|Mallik|120000.0|  2000.0|   SY|\n+---+------+--------+--------+-----+\n\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 42,
+      "time" : "Took: 888 milliseconds, at 2018-2-20 12:33"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "D73F50353DBF446B8907587DD14D106E"
+    },
+    "cell_type" : "code",
+    "source" : "CustomerDF.where(\"state\".equalTo(\"SY\")).show",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "<console>:74: error: value equalTo is not a member of String\n              CustomerDF.where(\"state\".equalTo(\"SY\")).show\n                                       ^\n"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "9C05DCECAC8D41CF879A42A91BB8D3FD"
+    },
+    "cell_type" : "code",
+    "source" : "CustomerDF.where(\"state = 'SY'\").show",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "+---+------+--------+--------+-----+\n| id|  name|   sales|discount|state|\n+---+------+--------+--------+-----+\n|  1|Mallik|120000.0|  2000.0|   SY|\n+---+------+--------+--------+-----+\n\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 48,
+      "time" : "Took: 788 milliseconds, at 2018-2-20 12:34"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "4F965812B4EC443382BAE7787FCB630C"
+    },
+    "cell_type" : "code",
+    "source" : "CustomerDF.where($\"state\" === \"SY\").show",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "+---+------+--------+--------+-----+\n| id|  name|   sales|discount|state|\n+---+------+--------+--------+-----+\n|  1|Mallik|120000.0|  2000.0|   SY|\n+---+------+--------+--------+-----+\n\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 54,
+      "time" : "Took: 764 milliseconds, at 2018-2-20 12:35"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "12341B56D6FB4C5BA9B019A660E991DC"
+    },
+    "cell_type" : "code",
+    "source" : "CustomerDF.where(CustomerDF(\"state\") === \"SY\").show",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "+---+------+--------+--------+-----+\n| id|  name|   sales|discount|state|\n+---+------+--------+--------+-----+\n|  1|Mallik|120000.0|  2000.0|   SY|\n+---+------+--------+--------+-----+\n\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 56,
+      "time" : "Took: 687 milliseconds, at 2018-2-20 12:36"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : true,
+      "id" : "5856E2AFF97242FFA0B8C598835AB94A"
+    },
+    "cell_type" : "code",
+    "source" : "import org.apache.spark.sql.functions.col",
+    "outputs" : [ ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "465166766803450382AD8FE73529EAE3"
+    },
+    "cell_type" : "code",
+    "source" : "CustomerDF.where(col(\"state\") === \"SY\").show",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "+---+------+--------+--------+-----+\n| id|  name|   sales|discount|state|\n+---+------+--------+--------+-----+\n|  1|Mallik|120000.0|  2000.0|   SY|\n+---+------+--------+--------+-----+\n\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 57,
+      "time" : "Took: 767 milliseconds, at 2018-2-20 12:36"
+    } ]
+  }, {
+    "metadata" : {
+      "id" : "1F640377FBB54F9B9888F56BF58E9B6A"
+    },
+    "cell_type" : "markdown",
+    "source" : "Another way to create dataframe"
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "8D003ECDABD54F128E6E6C0A35F6510A"
+    },
+    "cell_type" : "code",
+    "source" : "val custSeq = Seq(\n  (\"1, Mallik, 120000.00, 2000.00, SY\"),\n  (\"2, Sandy, 2299381.00, 3837.00, IL\"),\n  (\"3, Soma, 29191.00, 120.00, VT\"),\n  (\"4, Pebbi, 58372.00, 58.00, SG\"),\n  (\"5, Avi, 838201.00, 3929, GE\")\n)",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "custSeq: Seq[String] = List(1, Mallik, 120000.00, 2000.00, SY, 2, Sandy, 2299381.00, 3837.00, IL, 3, Soma, 29191.00, 120.00, VT, 4, Pebbi, 58372.00, 58.00, SG, 5, Avi, 838201.00, 3929, GE)\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 60,
+      "time" : "Took: 491 milliseconds, at 2018-2-20 12:39"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "DBCCA38FAC87452F8F763A163B40E510"
+    },
+    "cell_type" : "code",
+    "source" : "val custRDD = sc.parallelize(custSeq, 4)",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "custRDD: org.apache.spark.rdd.RDD[String] = ParallelCollectionRDD[34] at parallelize at <console>:69\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 61,
+      "time" : "Took: 535 milliseconds, at 2018-2-20 12:39"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "presentation" : {
+        "tabs_state" : "{\n  \"tab_id\": \"#tab635430603-0\"\n}",
+        "pivot_chart_state" : "{\n  \"hiddenAttributes\": [],\n  \"menuLimit\": 200,\n  \"cols\": [],\n  \"rows\": [],\n  \"vals\": [],\n  \"exclusions\": {},\n  \"inclusions\": {},\n  \"unusedAttrsVertical\": 85,\n  \"autoSortUnusedAttrs\": false,\n  \"inclusionsInfo\": {},\n  \"aggregatorName\": \"Count\",\n  \"rendererName\": \"Table\"\n}"
+      },
+      "id" : "AD45C4BC91F64E49909F800C8096FC63"
+    },
+    "cell_type" : "code",
+    "source" : "val CustDF = custRDD.map(_.split(\",\")).map(x => Cust(x(0).toInt, x(1), x(2).toDouble, x(3).toDouble, x(4))).toDF",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "CustDF: org.apache.spark.sql.DataFrame = [id: int, name: string, sales: double, discount: double, state: string]\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 65,
+      "time" : "Took: 970 milliseconds, at 2018-2-20 12:42"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "output_stream_collapsed" : true,
+      "collapsed" : false,
+      "id" : "675DF4E14DC14D2D8F52430D102F99F8"
+    },
+    "cell_type" : "code",
+    "source" : "CustDF.show",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "+---+-------+---------+--------+-----+\n| id|   name|    sales|discount|state|\n+---+-------+---------+--------+-----+\n|  1| Mallik| 120000.0|  2000.0|   SY|\n|  2|  Sandy|2299381.0|  3837.0|   IL|\n|  3|   Soma|  29191.0|   120.0|   VT|\n|  4|  Pebbi|  58372.0|    58.0|   SG|\n|  5|    Avi| 838201.0|  3929.0|   GE|\n+---+-------+---------+--------+-----+\n\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 66,
+      "time" : "Took: 825 milliseconds, at 2018-2-20 12:42"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "BF356583EA9C4DE58F12E817B433CC81"
+    },
+    "cell_type" : "code",
+    "source" : "CustDF.where(col(\"state\") === \"SY\").show",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "+---+----+-----+--------+-----+\n| id|name|sales|discount|state|\n+---+----+-----+--------+-----+\n+---+----+-----+--------+-----+\n\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 67,
+      "time" : "Took: 703 milliseconds, at 2018-2-20 12:43"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "A2E63093062442F5813F10BF80F6B321"
+    },
+    "cell_type" : "code",
+    "source" : "val CustDF = custRDD.map(_.split(\", \")).map(x => Cust(x(0).toInt, x(1), x(2).toDouble, x(3).toDouble, x(4))).toDF",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "CustDF: org.apache.spark.sql.DataFrame = [id: int, name: string, sales: double, discount: double, state: string]\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 69,
+      "time" : "Took: 831 milliseconds, at 2018-2-20 12:44"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "7D653EEE39A84F97A3072BAB5228D94E"
+    },
+    "cell_type" : "code",
+    "source" : "CustDF.where(col(\"state\") === \"SY\").show",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "+---+------+--------+--------+-----+\n| id|  name|   sales|discount|state|\n+---+------+--------+--------+-----+\n|  1|Mallik|120000.0|  2000.0|   SY|\n+---+------+--------+--------+-----+\n\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 70,
+      "time" : "Took: 791 milliseconds, at 2018-2-20 12:44"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : true,
+      "id" : "0040DF5670A24CB685F58732A1915CD4"
+    },
+    "cell_type" : "code",
+    "source" : "",
+    "outputs" : [ ]
+  } ],
+  "nbformat" : 4
+}
